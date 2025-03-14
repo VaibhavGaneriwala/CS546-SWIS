@@ -63,16 +63,16 @@ cd CS546-SWIS/
 
 ### 2. Install Dependencies
 
-\`\`\`bash
+```
 npm install
-\`\`\`
+```
 
 ### 3. Create `.env` File
 
-\`\`\`env
+```
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/warehouse-db
-\`\`\`
+```
 
 ### 4. Run the Application
 
