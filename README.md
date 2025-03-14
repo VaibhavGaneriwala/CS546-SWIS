@@ -34,7 +34,7 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 ## 📂 Project Structure
 
 ```
-smart-warehouse/
+CS546-SWIS/
 ├── backend/
 │   ├── models/
 │   ├── routes/ 
@@ -71,14 +71,14 @@ npm install
 
 ```
 PORT=3000
-MONGODB_URI=mongodb://localhost:27017/warehouse-db
+MONGODB_URI=mongodb://localhost:27017/swis-db
 ```
 
 ### 4. Run the Application
 
-\`\`\`bash
+```
 npm start
-\`\`\`
+```
 
 Visit `http://localhost:3000` in your browser.
 
