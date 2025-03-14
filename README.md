@@ -1,5 +1,3 @@
-# CS546-SWIS
-
 # 📦 Smart Warehouse Inventory System
 
 A web-based application that helps warehouse managers monitor and control inventory levels with real-time visibility and intelligent automation.
@@ -11,11 +9,11 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 ## 🛠️ Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Node.js (Express)
-- **Database:** MongoDB (via Mongoose)
+- **Backend:** Node.js
+- **Database:** MongoDB
 - **Real-Time Updates:** AJAX (Fetch API)
 - **Visualization:** Chart.js (for dashboards)
-- **Notifications:** Email/SMS integration (e.g., Nodemailer, Twilio) *(optional)*
+- **Notifications:** Email/SMS integration (e.g., Nodemailer, Twilio)
 
 ## 🌟 Core Features
 
@@ -35,3 +33,75 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 
 ## 📂 Project Structure
 
+```
+CS546-SWIS/
+├── backend/
+│   ├── models/
+│   ├── routes/ 
+│   ├── controllers/
+│   └── server.js
+├── public/
+│   ├── css/
+│   ├── js/
+│   └── index.html
+├── .env
+├── package.json
+└── README.md
+```
+
+## ⚙️ Setup Instructions
+
+### 1. Clone the Repository
+
+```
+git clone https://github.com/VaibhavGaneriwala/CS546-SWIS.git
+```
+
+```
+cd CS546-SWIS/
+```
+
+### 2. Install Dependencies
+
+```
+npm install
+```
+
+### 3. Create `.env` File
+
+```
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/swis-db
+```
+
+### 4. Run the Application
+
+```
+npm start
+```
+
+Visit `http://localhost:3000` in your browser.
+
+## 🧪 Sample API Routes
+
+- \`GET /api/inventory\` – Get all items
+- \`POST /api/inventory\` – Add a new item
+- \`PUT /api/inventory/:id\` – Update stock for an item
+- \`DELETE /api/inventory/:id\` – Remove an item
+
+## 📈 Future Improvements
+
+- Enhancing Automation
+- Advanced Reporting & Analytics
+- Integration with Other Systems
+
+## 🤝 Contributors
+
+- Vaibhav Ganeriwala
+- Erik Bobinski
+- Neha Sutariya
+- Terynce Chan
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
