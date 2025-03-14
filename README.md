@@ -53,8 +53,11 @@ smart-warehouse/
 
 ### 1. Clone the Repository
 
-```bash
+```
 git clone https://github.com/VaibhavGaneriwala/CS546-SWIS.git
+```
+
+```
 cd CS546-SWIS/
 ```
 
