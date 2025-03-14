@@ -1,5 +1,3 @@
-# CS546-SWIS
-
 # 📦 Smart Warehouse Inventory System
 
 A web-based application that helps warehouse managers monitor and control inventory levels with real-time visibility and intelligent automation.
@@ -35,3 +33,70 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 
 ## 📂 Project Structure
 
+\`\`\`
+smart-warehouse/
+├── backend/
+│   ├── models/              # Mongoose schemas
+│   ├── routes/              # API routes
+│   ├── controllers/         # Logic for each route
+│   └── server.js            # Express server
+├── public/
+│   ├── css/                 # Stylesheets
+│   ├── js/                  # Frontend JS logic
+│   └── index.html           # Main frontend
+├── .env                     # Environment variables
+├── package.json
+└── README.md
+\`\`\`
+
+## ⚙️ Setup Instructions
+
+### 1. Clone the Repository
+
+\`\`\`bash
+git clone https://github.com/your-username/smart-warehouse.git
+cd smart-warehouse
+\`\`\`
+
+### 2. Install Dependencies
+
+\`\`\`bash
+npm install
+\`\`\`
+
+### 3. Create `.env` File
+
+\`\`\`env
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/warehouse-db
+\`\`\`
+
+### 4. Run the Application
+
+\`\`\`bash
+npm start
+\`\`\`
+
+Visit `http://localhost:3000` in your browser.
+
+## 🧪 Sample API Routes
+
+- \`GET /api/inventory\` – Get all items
+- \`POST /api/inventory\` – Add a new item
+- \`PUT /api/inventory/:id\` – Update stock for an item
+- \`DELETE /api/inventory/:id\` – Remove an item
+
+## 📈 Future Improvements
+
+- User authentication and role-based access
+- Mobile-friendly UI
+- Barcode/QR scanning support
+- Integration with IoT sensors
+
+## 🤝 Contributors
+
+- Vaibhav & Team
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
