@@ -9,11 +9,11 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 ## 🛠️ Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Node.js (Express)
-- **Database:** MongoDB (via Mongoose)
+- **Backend:** Node.js
+- **Database:** MongoDB
 - **Real-Time Updates:** AJAX (Fetch API)
 - **Visualization:** Chart.js (for dashboards)
-- **Notifications:** Email/SMS integration (e.g., Nodemailer, Twilio) *(optional)*
+- **Notifications:** Email/SMS integration (e.g., Nodemailer, Twilio)
 
 ## 🌟 Core Features
 
@@ -36,15 +36,15 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 \`\`\`
 smart-warehouse/
 ├── backend/
-│   ├── models/              # Mongoose schemas
-│   ├── routes/              # API routes
-│   ├── controllers/         # Logic for each route
-│   └── server.js            # Express server
+│   ├── models/
+│   ├── routes/ 
+│   ├── controllers/
+│   └── server.js
 ├── public/
-│   ├── css/                 # Stylesheets
-│   ├── js/                  # Frontend JS logic
-│   └── index.html           # Main frontend
-├── .env                     # Environment variables
+│   ├── css/
+│   ├── js/
+│   └── index.html
+├── .env
 ├── package.json
 └── README.md
 \`\`\`
@@ -53,10 +53,10 @@ smart-warehouse/
 
 ### 1. Clone the Repository
 
-\`\`\`bash
-git clone https://github.com/your-username/smart-warehouse.git
-cd smart-warehouse
-\`\`\`
+```bash
+git clone https://github.com/VaibhavGaneriwala/CS546-SWIS.git
+cd CS546-SWIS/
+```
 
 ### 2. Install Dependencies
 
@@ -88,14 +88,16 @@ Visit `http://localhost:3000` in your browser.
 
 ## 📈 Future Improvements
 
-- User authentication and role-based access
-- Mobile-friendly UI
-- Barcode/QR scanning support
-- Integration with IoT sensors
+- Enhancing Automation
+- Advanced Reporting & Analytics
+- Integration with Other Systems
 
 ## 🤝 Contributors
 
-- Vaibhav & Team
+- Vaibhav Ganeriwala
+- Erik Bobinski
+- Neha Sutariya
+- Terynce Chan
 
 ## 📄 License
 
