@@ -33,7 +33,7 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 
 ## 📂 Project Structure
 
-\`\`\`
+```
 smart-warehouse/
 ├── backend/
 │   ├── models/
@@ -47,7 +47,7 @@ smart-warehouse/
 ├── .env
 ├── package.json
 └── README.md
-\`\`\`
+```
 
 ## ⚙️ Setup Instructions
 
