@@ -17,5 +17,13 @@
   "bugs": {
     "url": "https://github.com/VaibhavGaneriwala/CS546-SWIS/issues"
   },
-  "homepage": "https://github.com/VaibhavGaneriwala/CS546-SWIS#readme"
+  "homepage": "https://github.com/VaibhavGaneriwala/CS546-SWIS#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.1",
+    "handlebars": "^4.7.8",
+    "mongodb": "^6.16.0"
+  }
 }
