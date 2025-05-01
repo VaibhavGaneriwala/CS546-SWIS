@@ -125,8 +125,7 @@ const createCategory = async ({ categoryName, description }) => {
     categoryName = helper.checkString(categoryName, 'categoryName').toLowerCase()
     description = helper.checkString(description, 'description')    
 
-    const db = await dbConnection()
-    const categoryCollection = await db.collection('categories')    
+    const categoryCollection = await categories()  
     const existing = await categoryCollection.findOne({ categoryName: categoryName })
 
     if(existing){

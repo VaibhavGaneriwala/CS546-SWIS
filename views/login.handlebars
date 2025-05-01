@@ -6,6 +6,12 @@
     <section>
         <h2>Login</h2>
 
+        {{#if error}}
+            <p id="error">{{error}}</p>
+        {{else}}
+            <p id="error" hidden></p>
+        {{/if}}
+
         <form id="loginForm" action="/login" method="POST">
             <div class="username-section">
                 <label for="username">Username:</label>
