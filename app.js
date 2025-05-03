@@ -1,7 +1,7 @@
 // importing modules
 import express from "express";
 import exphbs from "express-handlebars";
-import indexRoutes from "./routes/index.js";
+import configRoutes from "./routes/index.js";
 import { requestLogger } from "./middleware.js";
 
 const app = express();
@@ -19,6 +19,6 @@ app.set("view engine", "handlebars");
 app.use("/", requestLogger);
 
 // config app's routes
-configRoutesFunction(app);
+configRoutes(app);
 
 app.listen(3000, () => console.log("Server running at http://localhost:3000"));
