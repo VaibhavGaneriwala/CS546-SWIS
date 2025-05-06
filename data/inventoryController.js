@@ -9,49 +9,12 @@ export async function addProduct(
     unitPrice,
     restockSuggestion
 ) {
-    // productName and categoryName: not empty or whitespace
-    if (typeof productName !== "string" || !productName.trim()) {
-        throw new Error("Product Name must be a non-empty string");
-    }
-    productName = productName.trim().toLowerCase();
-
-    // category: non-empty string
-    if (typeof categoryName !== "string" || !categoryName.trim()) {
-        throw new Error("Category Name must be a non-empty string");
-    }
-    categoryName = categoryName.trim().toLowerCase();
-
-    // quantity: integer >= 1
-    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 1) {
-        throw new Error("Quantity must be an integer greater than or equal to 1");
-    }
-
-    // minThreshold: integer >= 0
-    if (typeof minThreshold !== "number" || minThreshold < 0) {
-        throw new Error("Minimum Threshold must be a number greater than or equal to zero");
-    }
-
-    // unitPrice: non-negative number, always 2 decimal places
-    if (typeof unitPrice !== "number" || unitPrice < 0) {
-        throw new Error('Invalid unitPrice');
-    }
-    unitPrice = Number(unitPrice.toFixed(2));
-
-    // restockSuggestion: must be object (non-array)
-    if (typeof restockSuggestion !== 'object' || Array.isArray(restockSuggestion) || restockSuggestion === null)
-        throw new Error('Restock Suggestion must be of type object, and not an array');
-
-    // restockSuggestion.recommendedQty: integer >= 0
-    if (!typeof restockSuggestion.recommendedQty === "number" || restockSuggestion.recommendedQty < 0) {
-        throw new Error("Recommended Quantity must be a number greater than or equal to 0");
-    }
-
-    // restockSuggestion.nextRestockDate: YYYY-MM-DD
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(restockSuggestion.nextRestockDate))
-        throw new Error("Invalid restockSuggestion.nextRestockDate");
-
-    const lastUpdated = helpers.createCurrentDateandTime();
+    productName = helpers.validProductName(productName);
+    categoryName = helpers.validCategoryName(categoryName);
+    quantity = helpers.validQuantity(quantity);
+    minThreshold = helpers.validMinThreshold(minThreshold);
+    unitPrice = helpers.validUnitPrice(unitPrice);
+    restockSuggestion = helpers.validRestockSuggestion(restockSuggestion);
 
     const inventoryCollection = await inventory();
 
@@ -68,7 +31,7 @@ export async function addProduct(
         minThreshold,
         unitPrice,
         restockSuggestion,
-        lastUpdated
+        lastUpdated: helpers.createCurrentDateandTime()
     };
 
     const insertInfo = await inventoryCollection.insertOne(newProduct);
@@ -98,64 +61,28 @@ export async function updateProduct(
     // create update object with only the fields that are provided
     const updateData = {};
 
-    // productName: not empty or whitespace
     if (productName !== undefined) {
-        if (typeof productName !== "string" || !productName.trim()) {
-            throw new Error("Product Name must be a non-empty string");
-        }
-        updateData.productName = productName.trim.toLowerCase();
+        updateData.productName = helpers.validProductName(productName);
     }
 
-    // categoryName: not empty or whitespace
     if (categoryName !== undefined) {
-        if (typeof categoryName !== "string" || !categoryName.trim()) {
-            throw new Error("Category Name must be a non-empty string");
-        }
-        updateData.categoryName = categoryName.trim().toLowerCase();
+        updateData.categoryName = helpers.validCategoryName(categoryName);
     }
 
-    // quantity: integer >= 1
     if (quantity !== undefined) {
-        if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 1) {
-            throw new Error("Quantity must be an integer greater than or equal to 1");
-        }
-        updateData.quantity = quantity;
+        updateData.quantity = helpers.validQuantity(quantity);
     }
 
-    // minThreshold: integer >= 0
     if (minThreshold !== undefined) {
-        if (typeof minThreshold !== "number" || minThreshold < 0) {
-            throw new Error("Minimum Threshold must be a number greater than or equal to zero");
-        }
-        updateData.minThreshold = minThreshold;
+        updateData.minThreshold = helpers.validMinThreshold(minThreshold);
     }
 
-    // unitPrice: non-negative number, always 2 decimal places
     if (unitPrice !== undefined) {
-        if (typeof unitPrice !== "number" || unitPrice < 0) {
-            throw new Error('Invalid unitPrice');
-        }
-        updateData.unitPrice = Number(unitPrice.toFixed(2));
+        updateData.unitPrice = helpers.validUnitPrice(unitPrice);
     }
 
-    // restockSuggestion: must be object (non-array)
     if (restockSuggestion !== undefined) {
-        if (typeof restockSuggestion !== 'object' || Array.isArray(restockSuggestion) || restockSuggestion === null) {
-            throw new Error('Restock Suggestion must be of type object, and not an array');
-        }
-
-        // restockSuggestion.recommendedQty: integer >= 0
-        if (!typeof restockSuggestion.recommendedQty === "number" || restockSuggestion.recommendedQty < 0) {
-            throw new Error("Recommended Quantity must be a number greater than or equal to 0");
-        }
-
-        // restockSuggestion.nextRestockDate: YYYY-MM-DD
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateRegex.test(restockSuggestion.nextRestockDate)) {
-            throw new Error("Invalid restockSuggestion.nextRestockDate");
-        }
-
-        updateData.restockSuggestion = restockSuggestion;
+        updateData.restockSuggestion = helpers.validRestockSuggestion(restockSuggestion);
     }
 
     // need at least one field to update
@@ -167,7 +94,7 @@ export async function updateProduct(
     updateData.lastUpdated = helpers.createCurrentDateandTime();
 
     const updateInfo = await inventoryCollection.updateOne(
-        { _id: productId },
+        { productName: existingProduct.productName },
         { $set: updateData }
     );
 
@@ -198,4 +125,17 @@ export async function removeProduct(productName) {
     }
 
     return true;
+}
+
+export async function getProductByName(productName) {
+    productName = helpers.validProductName(productName);
+
+    const inventoryCollection = await inventory();
+    const product = await inventoryCollection.findOne({ productName });
+
+    if (!product) {
+        throw new Error("Product not found");
+    }
+
+    return product;
 }
