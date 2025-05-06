@@ -3,15 +3,17 @@ import userRoutes from './users.js';
 
 const router = express.Router();
 
-// Root route
+// Root route - redirect to login
 router.get('/', (req, res) => {
-  res.render('login', {title: 'Login'});
+    if (req.session.user) {
+        return res.redirect('/dashboard');
+    }
+    res.redirect('/login');
 });
 
-// Mount user routes at both / and /users
+// Mount user routes
 router.use('/', userRoutes);
-router.use('/users', userRoutes);
 
 export default function configRoutes(app) {
-  app.use('/', router);
+    app.use('/', router);
 }

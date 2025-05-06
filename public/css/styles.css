@@ -17,10 +17,9 @@ h1, h2 {
 }
 
 form {
-    background-color: #2c2c2c; /* Slightly lighter black for contrast */
+    color: #3a8dde;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     width: 300px;
 }
 
@@ -30,8 +29,6 @@ input[type="text"], input[type="password"] {
     margin: 10px 0;
     border: 1px solid #444;
     border-radius: 4px;
-    background-color: #3c3c3c;
-    color: #ffffff;
     box-sizing: border-box;
 }
 

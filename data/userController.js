@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-        const newUser = {firstName, lastName, email, username, password: hashedPassword, phone: '', street: '', city: '', state: '', zipCode: '', country: '', role: 'user', createdAt: new Date(), lastLogin: null};
+        const newUser = {firstName, lastName, email, username, password: hashedPassword, role: 'user', createdAt: new Date(), lastLogin: null};
         const insertResult = await usersCol.insertOne(newUser);
         if (!insertResult.acknowledged || !insertResult.insertedId) throw new Error('User insert failed');
 

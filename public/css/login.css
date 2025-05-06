@@ -1,0 +1,87 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  height: 100vh;
+  background-color: #ffffff;
+}
+.container {
+  display: flex;
+  width: 100%;
+}
+.left-panel {
+  flex: 1;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #e0e0e0;
+}
+.left-panel img {
+  max-width: 200px;
+}
+.left-panel h1 {
+  color: #3a8dde;
+  font-size: 24px;
+  margin-top: 20px;
+  text-align: center;
+}
+.right-panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+.form-container {
+  width: 100%;
+  max-width: 360px;
+}
+.form-container img {
+  width: 50%;
+  margin: 0 auto 1rem;
+  display: block;
+}
+h2 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #3a8dde;
+}
+p {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #666;
+}
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  width: 100%;
+  background-color: #3a8dde;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.signup {
+  color: #3a8dde;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.signup a {
+  text-decoration: none;
+  color: #3a8dde;
+}
