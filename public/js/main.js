@@ -1,10 +1,17 @@
 // Form validation and submission handling
 document.addEventListener('DOMContentLoaded', () => {
+    // Hide error message on page load
+    const errorMessage = document.querySelector('.error-message');
+    if (errorMessage) {
+        errorMessage.style.display = 'none';
+    }
+
     // Login form handling
-    const loginForm = document.getElementById('loginForm');
+    const loginForm = document.querySelector('form[action="/login"]');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             
@@ -14,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('/users/login', {
+                const response = await fetch('/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -22,12 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ username, password })
                 });
 
+                const data = await response.text();
+                
                 if (response.redirected) {
                     window.location.href = response.url;
+                } else if (response.ok) {
+                    window.location.href = '/dashboard';
                 } else {
-                    const data = await response.json();
-                    if (data.error) {
-                        showError(data.error);
+                    // If the response is HTML (which it is in our case), parse it to get the error
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const errorDiv = doc.querySelector('.error-message');
+                    if (errorDiv) {
+                        showError(errorDiv.textContent);
+                    } else {
+                        showError('Invalid username or password');
                     }
                 }
             } catch (error) {
@@ -37,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Registration form handling
-    const registerForm = document.getElementById('register-form');
+    const registerForm = document.querySelector('form[action="/register"]');
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -71,26 +87,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('/users/register', {
+                const response = await fetch('/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        firstName,
-                        lastName,
-                        email,
-                        username,
-                        password
+                        firstName, lastName, email, username, password
                     })
                 });
 
+                const data = await response.text();
+
                 if (response.redirected) {
                     window.location.href = response.url;
+                } else if (response.ok) {
+                    window.location.href = '/dashboard';
                 } else {
-                    const data = await response.json();
-                    if (data.error) {
-                        showError(data.error);
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const errorDiv = doc.querySelector('.error-message');
+                    if (errorDiv) {
+                        showError(errorDiv.textContent);
+                    } else {
+                        showError('Registration failed. Please try again.');
                     }
                 }
             } catch (error) {
@@ -101,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper functions
     function showError(message) {
-        const errorDiv = document.getElementById('error-message');
+        const errorDiv = document.querySelector('.error-message');
         if (errorDiv) {
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';

@@ -1,5 +1,5 @@
 // helper functions for input validation
-export {validFirstName, validLastName};
+export {validFirstName, validLastName, validEmail, validUsername, validPassword, createCurrentDateandTime};
 
 function validFirstName(firstName){
 
@@ -37,7 +37,17 @@ function validUsername(username){
 function validPassword(password){
     if (!password === 'string' || password.trim() === '') throw new Error("Password must be a non-empty string");
     password = password.trim();
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
-    if (!regex.test(password)) throw new Error("Password must be at least 8 characters long, containing at least one letter and one number");
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    if (!regex.test(password)) throw new Error("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.");
     return password;
+}
+
+function createCurrentDateandTime(){
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
 }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{{{title}}}</title>
-  <link rel="stylesheet" href="/css/register.css">
+  <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
   <div class="container">
@@ -17,30 +17,35 @@
     <div class="right-panel">
       <div class="form-container">
         <img src="/images/swisLogo.png" alt="SWIS Logo"/>
-        <form action="/register" method="POST">
+        <div class="error-message" style="display: {{#if error}}block{{else}}none{{/if}}">{{error}}</div>
         <h2>Create an account</h2>
-        <label for="firstName">First Name
-          <input type="text" placeholder="Enter your first name" required>
-        </label>
-        <label for="lastName">Last Name
-          <input type="text" placeholder="Enter your last name" required>
-        </label>
-        <label for="username">Username
-          <input type="text" placeholder="Enter your username" required>
-        </label>
-        <label for="email">Email
-          <input type="email" placeholder="Enter your email" required>
-        </label>
-        <label for="password">Password
-          <input type="password" placeholder="Create a password" required>
-        </label>
+        <form action="/register" method="POST">
+          <label for="firstName">First Name
+            <input id="firstName" name="firstName" type="text" placeholder="Enter your first name" required>
+          </label>
+          <label for="lastName">Last Name
+            <input id="lastName" name="lastName" type="text" placeholder="Enter your last name" required>
+          </label>
+          <label for="email">Email
+            <input id="email" name="email" type="email" placeholder="Enter your email" required>
+          </label>
+          <label for="username">Username
+            <input id="username" name="username" type="text" placeholder="Enter your username" required>
+          </label>
+          <label for="password">Password
+            <input id="password" name="password" type="password" placeholder="Create a password" required>
+          </label>
+          <label for="confirmPassword">Confirm Password
+            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your password" required>
+          </label>
           <button class="btn" type="submit">Get started</button>
         </form>
-        <div class="login">
+        <div class="signup">
           Already have an account? <a href="/login">Log in</a>
         </div>
       </div>
     </div>
   </div>
+  <script src="/js/main.js"></script>
 </body>
 </html>

@@ -17,16 +17,17 @@
     <div class="right-panel">
       <div class="form-container">
         <img src="/images/swisLogo.png" alt="SWIS Logo">
+        <div class="error-message" style="display: {{#if error}}block{{else}}none{{/if}}">{{error}}</div>
         <h2>Log in to your account</h2>
         <p>Welcome back! Please enter your details.</p>
-        <form>
+        <form action="/login" method="POST">
             <label for="username">Username
-                <input id="username" type="text" placeholder="Enter your username" required>
+                <input id="username" name="username" type="text" placeholder="Enter your username" required>
             </label>
             <label for="password">Password
-          <input id="password" type="password" placeholder="Password" required>
+                <input id="password" name="password" type="password" placeholder="Password" required>
             </label>
-          <button class="btn" type="submit">Sign in</button>
+            <button class="btn" type="submit">Sign in</button>
         </form>
         <div class="signup">
           Don't have an account? <a href="/register">Sign up</a>
@@ -34,5 +35,6 @@
       </div>
     </div>
   </div>
+  <script src="/js/main.js"></script>
 </body>
 </html>
