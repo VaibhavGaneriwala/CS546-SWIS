@@ -1,33 +1,18 @@
 import express from 'express';
-import {registerUser, loginUser} from '../data/userController.js';
+import { registerUser, loginUser } from '../data/userController.js';
+import { redirectIfAuthenticated, requireAuth } from '../src/middlewares/auth.js';
 
 const router = express.Router();
 
-// Middleware to check if user is already logged in
-const redirectIfAuthenticated = (req, res, next) => {
-    if (req.session.user) {
-        return res.redirect('/dashboard');
-    }
-    next();
-};
-
-// Middleware to check if user is not logged in
-const requireAuth = (req, res, next) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    next();
-};
-
 // Auth routes
 router.get('/login', redirectIfAuthenticated, (req, res) => {
-    res.render('login', {title: 'Login | SWIS'});
+    res.render('login', { title: 'Login | SWIS' });
 });
 
 router.post('/login', redirectIfAuthenticated, loginUser);
 
 router.get('/register', redirectIfAuthenticated, (req, res) => {
-    res.render('register', {title: 'Register | SWIS'});
+    res.render('register', { title: 'Register | SWIS' });
 });
 
 router.post('/register', redirectIfAuthenticated, registerUser);

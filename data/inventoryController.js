@@ -1,4 +1,5 @@
 import { inventory } from '../config/mongoCollections.js';
+import * as helpers from "../utils/validations.js";
 
 export async function addProduct(
     productName,
@@ -6,8 +7,7 @@ export async function addProduct(
     quantity,
     minThreshold,
     unitPrice,
-    restockSuggestion,
-    lastUpdated
+    restockSuggestion
 ) {
     // productName and categoryName: not empty or whitespace
     if (typeof productName !== "string" || !productName.trim()) {
@@ -15,6 +15,7 @@ export async function addProduct(
     }
     productName = productName.trim();
 
+    // category: non-empty string
     if (typeof categoryName !== "string" || !categoryName.trim()) {
         throw new Error("Category Name must be a non-empty string");
     }
@@ -50,11 +51,7 @@ export async function addProduct(
     if (!dateRegex.test(restockSuggestion.nextRestockDate))
         throw new Error("Invalid restockSuggestion.nextRestockDate");
 
-    // lastUpdated: ISO datetime string
-    const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
-    if (!isoDateTimeRegex.test(lastUpdated)) {
-        throw new Error("Last Updated time is not in proper format");
-    }
+    const lastUpdated = helpers.createCurrentDateandTime();
 
     const inventoryCollection = await inventory();
 
