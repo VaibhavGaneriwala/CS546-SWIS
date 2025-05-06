@@ -1,4 +1,4 @@
-import {dbConnection} from './mongoConnection.js';
+import { dbConnection } from './mongoConnection.js';
 
 const getCollectionFn = (collection) => {
   let _col = undefined;
@@ -12,10 +12,10 @@ const getCollectionFn = (collection) => {
 };
 
 const users = getCollectionFn('users');
-const products = getCollectionFn('products');
+const inventory = getCollectionFn('inventory');
 const transactions = getCollectionFn('transactions');
 const auditLogs = getCollectionFn('auditLogs');
 const notifications = getCollectionFn('notifications');
 const restockSuggestions = getCollectionFn('restockSuggestions');
 
-export {users, products, transactions, auditLogs, notifications, restockSuggestions};
+export { users, inventory, transactions, auditLogs, notifications, restockSuggestions };
