@@ -1,6 +1,5 @@
 import { inventory } from '../config/mongoCollections.js';
 
-//TODO: add args to db w/ mongo API
 export async function addProduct(
     productName,
     categoryName,
@@ -11,13 +10,19 @@ export async function addProduct(
     lastUpdated
 ) {
     // productName and categoryName: not empty or whitespace
-    const nameRegex = /^(?!\s*$).+/;
-    if (!nameRegex.test(productName)) return 'Invalid productName';
-    if (!nameRegex.test(categoryName)) return 'Invalid categoryName';
+    if (typeof productName !== "string" || !productName.trim()) {
+        throw new Error("Product Name must be a non-empty string");
+    }
+    productName = productName.trim();
+
+    if (typeof categoryName !== "string" || !categoryName.trim()) {
+        throw new Error("Category Name must be a non-empty string");
+    }
+    categoryName = categoryName.trim();
 
     // quantity: integer >= 1
-    if (typeof quantity !== "number" || !Number.isInteger(quantity)) {
-        throw new Error("Quantity must be an integer");
+    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 1) {
+        throw new Error("Quantity must be an integer greater than or equal to 1");
     }
 
     // minThreshold: integer >= 0
@@ -51,5 +56,28 @@ export async function addProduct(
         throw new Error("Last Updated time is not in proper format");
     }
 
+    const inventoryCollection = await inventory();
 
+    // check for duplicate product name
+    const existingProduct = await inventoryCollection.findOne({ productName: productName });
+    if (existingProduct) {
+        throw new Error("A product with this name already exists");
+    }
+
+    const newProduct = {
+        productName,
+        categoryName,
+        quantity,
+        minThreshold,
+        unitPrice,
+        restockSuggestion,
+        lastUpdated
+    };
+
+    const insertInfo = await inventoryCollection.insertOne(newProduct);
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) {
+        throw new Error("Could not add product");
+    }
+
+    return { insertedProduct: true, productId: insertInfo.insertedId };
 }
