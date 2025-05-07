@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 const authController = require("../../controllers/authController");
 const { ensureAuth, ensureGuest } = require("../middlewares/auth");

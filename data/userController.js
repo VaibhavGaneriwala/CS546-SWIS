@@ -1,21 +1,19 @@
-import {users} from '../config/mongoCollections.js';
+import { users } from '../config/mongoCollections.js';
 import bcrypt from 'bcryptjs';
 import { ObjectId } from 'mongodb';
 import * as helpers from '../utils/validations.js';
 
 const SALT_ROUNDS = 10;
 
-const registerUser = async (req, res) => {
-    const {firstName, lastName, email, username, password} = req.body;
-
-    if (!firstName || !lastName || !email || !username || !password) {
-        return res.status(400).render('register', {
-            title: 'Register | SWIS',
-            error: 'All fields are required'
-        });
-    }
+const registerUser = async (firstName, lastName, email, username, password) => {
+    let status = 200;
 
     try {
+        if (!firstName || !lastName || !email || !username || !password) {
+            status = 404;
+            throw new Error("You must supply all fields!");
+        }
+
         const validatedFirstName = helpers.validFirstName(firstName);
         const validatedLastName = helpers.validLastName(lastName);
         const validatedEmail = helpers.validEmail(email);
@@ -23,20 +21,16 @@ const registerUser = async (req, res) => {
         const validatedPassword = helpers.validPassword(password);
 
         if (!validatedFirstName || !validatedLastName || !validatedEmail || !validatedUsername || !validatedPassword) {
-            return res.status(400).render('register', {
-                title: 'Register | SWIS',
-                error: 'All fields are required'
-            });
+            status = 404;
+            throw new Error("You must supply all fields!");
         }
 
         const usersCol = await users();
 
-        const existingUser = await usersCol.findOne({username: validatedUsername});
+        const existingUser = await usersCol.findOne({ username: validatedUsername });
         if (existingUser) {
-            return res.status(400).render('register', {
-                title: 'Register | SWIS',
-                error: 'Username already exists'
-            });
+            status = 404;
+            throw new Error("Username already exists!");
         }
 
         const hashedPassword = await bcrypt.hash(validatedPassword, SALT_ROUNDS);
@@ -54,6 +48,7 @@ const registerUser = async (req, res) => {
 
         const insertResult = await usersCol.insertOne(newUser);
         if (!insertResult.acknowledged || !insertResult.insertedId) {
+            status = 500;
             throw new Error('User insert failed');
         }
 
@@ -65,48 +60,38 @@ const registerUser = async (req, res) => {
             lastName: validatedLastName
         };
 
-        return res.redirect('/dashboard');
-    } catch (error) {
-        return res.status(400).render('register', {
-            title: 'Register | SWIS',
-            error: error.message
-        });
+        return { status, user: req.session.user };
+    } catch (e) {
+        throw { status, message: e.message };
     }
 };
 
-const loginUser = async (req, res) => {
-    const {username, password} = req.body;
-
-    if (!username || !password) {
-        return res.status(400).render('login', {
-            title: 'Login | SWIS',
-            error: 'All fields are required'
-        });
-    }
+const loginUser = async (username, password) => {
+    let status = 200;
 
     try {
+        if (!username || !password) {
+            status = 404;
+            throw new Error("Fill out username and password!");
+        }
         const usersCol = await users();
-        const user = await usersCol.findOne({username: username});
-        
+        const user = await usersCol.findOne({ username: username });
+
         if (!user) {
-            return res.status(400).render('login', {
-                title: 'Login | SWIS',
-                error: 'Invalid username or password'
-            });
+            status = 404;
+            throw new Error("Invalid username or password");
         }
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-            return res.status(400).render('login', {
-                title: 'Login | SWIS',
-                error: 'Invalid username or password'
-            });
+            status = 404;
+            throw new Error("Invalid username or password");
         }
 
         // Update last login time
         await usersCol.updateOne(
-            {_id: user._id},
-            {$set: {lastLogin: helpers.createCurrentDateandTime()}}
+            { _id: user._id },
+            { $set: { lastLogin: helpers.createCurrentDateandTime() } }
         );
 
         // Set session data
@@ -118,14 +103,10 @@ const loginUser = async (req, res) => {
             lastName: user.lastName
         };
 
-        // Redirect to dashboard
-        return res.redirect('/dashboard');
+        return { status: status, user: req.session.user };
     } catch (e) {
-        return res.status(500).render('login', {
-            title: 'Login | SWIS',
-            error: 'Failed to login'
-        });
+        throw { status, message: e.message };
     }
 };
 
-export {registerUser, loginUser};
+export { registerUser, loginUser };

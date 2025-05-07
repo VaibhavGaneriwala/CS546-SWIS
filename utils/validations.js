@@ -29,8 +29,8 @@ function validEmail(email) {
 function validUsername(username) {
     if (!username === 'string' || username.trim() === '') throw new Error("Username must be a non-empty string");
     username = username.trim().toLowerCase();
-    const regex = /^[A-Za-z0-9]{3,20}$/
-    if (!regex.test(username)) throw new Error("Username must be 3-20 characters long, containing only letters and numbers");
+    const regex = /^[A-Za-z0-9_-]{3,20}$/
+    if (!regex.test(username)) throw new Error("Username must be 3-20 characters long, containing only letters, numbers, hyphens, and underscores");
     return username;
 }
 
