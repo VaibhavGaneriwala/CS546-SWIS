@@ -52,15 +52,7 @@ const registerUser = async (firstName, lastName, email, username, password) => {
             throw new Error('User insert failed');
         }
 
-        req.session.user = {
-            _id: insertResult.insertedId,
-            username: validatedUsername,
-            role: 'user',
-            firstName: validatedFirstName,
-            lastName: validatedLastName
-        };
-
-        return { status, user: req.session.user };
+        return { status, user: { _id: insertResult._id, username: insertResult.username, role: insertResult.role, firstName: insertResult.firstName } };
     } catch (e) {
         throw { status, message: e.message };
     }
@@ -94,16 +86,16 @@ const loginUser = async (username, password) => {
             { $set: { lastLogin: helpers.createCurrentDateandTime() } }
         );
 
-        // Set session data
-        req.session.user = {
-            _id: user._id,
-            username: user.username,
-            role: user.role,
-            firstName: user.firstName,
-            lastName: user.lastName
+        return {
+            status: status,
+            user: {
+                _id: user._id,
+                username: user.username,
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName
+            }
         };
-
-        return { status: status, user: req.session.user };
     } catch (e) {
         throw { status, message: e.message };
     }

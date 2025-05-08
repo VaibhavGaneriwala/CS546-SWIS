@@ -2,7 +2,7 @@ import express from "express";
 import session from "express-session";
 import exphbs from "express-handlebars";
 import path from "path";
-import {fileURLToPath} from "url";
+import { fileURLToPath } from "url";
 import configRoutes from "./routes/index.js";
 
 const app = express();
@@ -10,7 +10,20 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const hbs = exphbs.create({ defaultLayout: 'main' });
+const hbs = exphbs.create({
+  defaultLayout: 'main',
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  helpers: {
+    contentFor: function (name, options) {
+      if (!this._blocks) this._blocks = {};
+      this._blocks[name] = options.fn(this);
+      return null;
+    },
+    block: function (name) {
+      return this._blocks && this._blocks[name] ? this._blocks[name] : '';
+    }
+  }
+});
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));

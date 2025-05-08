@@ -15,8 +15,8 @@ router.post('/login', redirectIfAuthenticated, async (req, res) => {
 
     // req validation
     try {
-        let username = helpers.validUsername(req.body.username).trim();
-        let password = helpers.validPassword(req.body.password).trim();
+        username = helpers.validUsername(req.body.username).trim();
+        password = helpers.validPassword(req.body.password).trim();
     } catch (e) {
         return res.status(404).render("error", {
             title: "Error | SWIS",
@@ -27,6 +27,16 @@ router.post('/login', redirectIfAuthenticated, async (req, res) => {
     // DB comparison
     try {
         const result = await loginUser(username, password);
+
+        // Set session data
+        req.session.user = {
+            _id: result.user._id,
+            username: result.user.username,
+            role: result.user.role,
+            firstName: result.user.firstName,
+            lastName: result.user.lastName
+        };
+
         return res.redirect('/dashboard');
     } catch (e) {
         return res.status(e.status || 500).render("error", {
@@ -60,6 +70,16 @@ router.post('/register', redirectIfAuthenticated, async (req, res) => {
     // DB insert
     try {
         const result = await registerUser(firstName, lastName, email, username, password);
+
+        // Set session data
+        req.session.user = {
+            _id: result.user._id,
+            username: result.user.username,
+            role: result.user.role,
+            firstName: result.user.firstName,
+            lastName: result.user.lastName
+        };
+
         return res.redirect("/login");
     } catch (e) {
         return res.status(e.status || 500).render("error", {
@@ -79,7 +99,7 @@ router.get('/logout', (req, res) => {
 router.get('/dashboard', requireAuth, (req, res) => {
     res.render('dashboard', {
         title: 'Dashboard | SWIS',
-        user: req.session.user
+        // user: req.session.user
     });
 });
 
