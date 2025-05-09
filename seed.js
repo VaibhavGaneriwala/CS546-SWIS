@@ -20,6 +20,18 @@ const testUser = {
   email: 'batman@gmail.com',
   username: 'lego',
   password: hashedPassword,
+  profilePicture: '/static/profile.png',
+  phone: '+15555550123',
+  address: {
+    street: '456 Main St',
+    city: 'Seattle',
+    state: 'WA',
+    zip: '98101'
+  },
+  roleid: new ObjectId(),
+  roleName: 'supplier',
+  isActive: true,
+  createdAt: new Date()
 }
 
 const { insertedId: userId } = await users.insertOne(testUser)
