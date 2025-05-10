@@ -5,6 +5,13 @@ import * as helpers from "../utils/validations.js";
 
 const router = Router();
 
+// Render inventory page
+router.get("/inventory", requireAuth, (req, res) => {
+    res.render('inventory', {
+        title: 'Inventory | SWIS'
+    });
+});
+
 // search for product by name
 router.get("/inventory/:productName", requireAuth, async (req, res) => {
     try {

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventory Dashboard</title>
+  <link rel="stylesheet" href="/css/inventory.css">
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2 class="logo">SWIS</h2>
+      <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a class="active" href="/inventory">Inventory</a>
+        <a href="/reports">Reports</a>
+        <a href="/settings">Settings</a>
+        <a href="/logout">Log Out</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="top-bar">
+        <input type="text" placeholder="Search product">
+        <div class="profile"></div>
+      </header>
+
+      <section class="overview">
+        <div class="card">
+          <p>Categories</p>
+          <h3>14</h3>
+          <small>Last 7 days</small>
+        </div>
+        <div class="card">
+          <p>Total Products</p>
+          <h3>868</h3>
+          <small>$25000 Revenue</small>
+        </div>
+        <div class="card">
+          <p>Top Selling</p>
+          <h3>5</h3>
+          <small>$2500 Cost</small>
+        </div>
+        <div class="card">
+          <p>Low Stocks</p>
+          <h3>12</h3>
+          <small>2 Not in stock</small>
+        </div>
+      </section>
+
+      <section class="products">
+        <div class="product-header">
+          <h2>Products</h2>
+          <div class="buttons">
+            <button class="add">Add Product</button>
+            <button class="filter">Filters</button>
+            <button class="download">Download all</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Products</th>
+              <th>Buying Price</th>
+              <th>Quantity</th>
+              <th>Threshold Value</th>
+              <th>Expiry Date</th>
+              <th>Availability</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Maggi</td><td>$430</td><td>43 Packets</td><td>12 Packets</td><td>11/12/22</td><td class="in-stock">In-stock</td></tr>
+            <tr><td>Bru</td><td>$257</td><td>22 Packets</td><td>12 Packets</td><td>21/12/22</td><td class="out-stock">Out of stock</td></tr>
+            <tr><td>Red Bull</td><td>$405</td><td>36 Packets</td><td>9 Packets</td><td>5/12/22</td><td class="in-stock">In-stock</td></tr>
+            <tr><td>Bourn Vita</td><td>$502</td><td>14 Packets</td><td>6 Packets</td><td>8/12/22</td><td class="out-stock">Out of stock</td></tr>
+            <tr><td>Horlicks</td><td>$530</td><td>5 Packets</td><td>5 Packets</td><td>9/1/23</td><td class="in-stock">In-stock</td></tr>
+            <tr><td>Harpic</td><td>$605</td><td>10 Packets</td><td>5 Packets</td><td>9/1/23</td><td class="in-stock">In-stock</td></tr>
+            <tr><td>Ariel</td><td>$408</td><td>23 Packets</td><td>7 Packets</td><td>15/12/23</td><td class="out-stock">Out of stock</td></tr>
+            <tr><td>Scotch Brite</td><td>$359</td><td>43 Packets</td><td>8 Packets</td><td>6/6/23</td><td class="in-stock">In-stock</td></tr>
+            <tr><td>Coca cola</td><td>$205</td><td>41 Packets</td><td>10 Packets</td><td>11/11/22</td><td class="low-stock">Low stock</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <button>Previous</button>
+          <span>Page 1 of 10</span>
+          <button>Next</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

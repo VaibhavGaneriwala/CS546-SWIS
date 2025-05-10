@@ -1,7 +1,7 @@
 import express from 'express';
 import userRoutes from './users.js';
 import inventoryRoutes from './inventory.js';
-import dashboardRoutes from './dashboardRoutes.js';
+import dashboardRoutes from './dashboardRoutes.js'
 
 const router = express.Router();
 
@@ -17,7 +17,6 @@ router.get('/', (req, res) => {
 router.use('/', userRoutes);
 router.use('/', inventoryRoutes);
 router.use('/dashboard', dashboardRoutes);
-
 
 export default function configRoutes(app) {
     app.use('/', router);

@@ -6,6 +6,7 @@ import { } from './categoryController.js';
 import { addProduct } from './inventoryController.js';
 import { } from './logController.js';
 import { } from './notificationController.js';
+import { } from './dashboard.js'
 
 export {
     registerUser,
