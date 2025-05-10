@@ -95,12 +95,14 @@ router.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
+
 // Protected routes
-router.get('/dashboard', requireAuth, (req, res) => {
-    res.render('dashboard', {
-        title: 'Dashboard | SWIS',
-        // user: req.session.user
-    });
-});
+// router.get('/dashboard', requireAuth, (req, res) => {
+//     res.render('dashboard', {
+//         title: 'Dashboard | SWIS',
+//         // user: req.session.user
+//     });
+// });
+
 
 export default router;
