@@ -112,3 +112,50 @@ export async function getProductByName(productName) {
 
     return product;
 }
+
+export async function getAllProducts() {
+    try {
+        console.log('Getting all products...');
+        const inventoryCollection = await inventory();
+        console.log('Got inventory collection');
+        const rawProducts = await inventoryCollection.find({}).toArray();
+        console.log('Found products:', rawProducts);
+
+        const categoryCount = new Set(rawProducts.map(p => p.categoryName?.toLowerCase())).size;
+
+        if(!rawProducts || rawProducts.length === 0) {
+            console.log('No products found');
+            return {
+                products: [],
+                categoryCount: 0,
+                lowStockCount: 0,
+                noStockCount: 0,
+                dummyRevenue: 0,
+                dummyCost: 0
+            }
+        }
+
+        // Process products to add stock status
+        const products = rawProducts.map(product => ({
+            ...product,
+            stockStatus: product.quantity === 0 ? 'out-stock' : 
+                        product.quantity <= product.minThreshold ? 'low-stock' : 'in-stock'
+        }));
+
+        const lowStockCount = products.filter(p => p.stockStatus === 'low-stock').length;
+        const noStockCount = products.filter(p => p.stockStatus === 'out-stock').length;
+
+        console.log('Returning processed products:', products);
+        return {
+            products,
+            categoryCount,
+            lowStockCount,
+            noStockCount,
+            dummyRevenue: 25000,
+            dummyCost: 2500
+        }
+    } catch (error) {
+        console.error('Error in getAllProducts:', error);
+        throw error;
+    }
+}

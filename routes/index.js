@@ -1,7 +1,8 @@
 import express from 'express';
 import userRoutes from './users.js';
 import inventoryRoutes from './inventory.js';
-import dashboardRoutes from './dashboardRoutes.js'
+import dashboardRoutes from './dashboardRoutes.js';
+import reportsRoutes from './reports.js';
 
 const router = express.Router();
 
@@ -13,10 +14,11 @@ router.get('/', (req, res) => {
     res.redirect('/login');
 });
 
-// Mount user routes
+// Mount routes
 router.use('/', userRoutes);
 router.use('/', inventoryRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.use('/', reportsRoutes);
 
 export default function configRoutes(app) {
     app.use('/', router);

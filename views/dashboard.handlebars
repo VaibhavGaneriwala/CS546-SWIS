@@ -1,8 +1,13 @@
-{{#contentFor "styles"}}
-<link rel="stylesheet" href="/css/dashboard.css" />
-{{/contentFor}}
-
-<div class="dashboard">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{{title}}}</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard">
   <aside class="sidebar">
     <div class="logo">
       <img src="/images/swisLogo.png" alt="SWIS Logo">
@@ -56,52 +61,6 @@
           <div><strong>{{categoryCount}}</strong><br>Number of Categories</div>
         </div>
       </div>
-
-      <div class="card wide">
-        <h3>Sales & Purchase</h3>
-        <canvas id="salesChart" height="100"></canvas>
-      </div>
-
-      <div class="card">
-        <h3>Order Summary</h3>
-        <canvas id="orderChart" height="100"></canvas>
-      </div>
-
-      <div class="card">
-        <h3>Top Selling Stock <a href="#">See All</a></h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Sold</th>
-              <th>Remaining</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each topSellingProducts}}
-              <tr>
-                <td>{{this.name}}</td>
-                <td>{{this.sold}}</td>
-                <td>{{this.remaining}}</td>
-                <td>$ {{this.price}}</td>
-              </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card">
-        <h3>Low Quantity Stock <a href="#">See All</a></h3>
-        <ul class="low-stock">
-          {{#each lowStockItems}}
-            <li>
-              {{this.productName}} - {{this.quantity}} units
-              <span class="low">Low</span>
-            </li>
-          {{/each}}
-        </ul>
-      </div>
     </section>
   </main>
 </div>
@@ -119,17 +78,7 @@
       ]
     }
   });
-
-  const ctx2 = document.getElementById('orderChart').getContext('2d');
-  new Chart(ctx2, {
-    type: 'line',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-      datasets: [
-        { label: 'Ordered', data: [3000, 2500, 2700, 2900, 3100], borderColor: '#60a5fa' },
-        { label: 'Delivered', data: [2800, 2300, 2600, 2800, 3000], borderColor: '#34d399' }
-      ]
-    }
-  });
 </script>
 {{/contentFor}}
+</body>
+</html>

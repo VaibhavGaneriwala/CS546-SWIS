@@ -1,0 +1,22 @@
+import express from 'express';
+import { getDashboardData } from '../data/dashboard.js';
+import { requireAuth } from '../src/middlewares/auth.js';
+
+const router = express.Router();
+
+router.get('/reports', requireAuth, async (req, res) => {
+    try {
+        const data = await getDashboardData();
+        res.render('reports', {
+            title: 'Reports | SWIS',
+            ...data
+        });
+    } catch (e) {
+        return res.status(404).render("error", {
+            title: "Error",
+            error: e.message
+        });
+    }
+});
+
+export default router; 

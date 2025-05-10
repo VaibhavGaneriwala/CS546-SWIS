@@ -1,0 +1,102 @@
+{{#contentFor "styles"}}
+<link rel="stylesheet" href="/css/dashboard.css" />
+{{/contentFor}}
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="logo">
+      <img src="/images/swisLogo.png" alt="SWIS Logo">
+      <h2>Reports</h2>
+    </div>
+    <nav class="menu">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/inventory">Inventory</a>
+      <a href="/reports" class="active">Reports</a>
+      <a href="/settings">Settings</a>
+      <a href="/logout">Log Out</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <header class="header">
+      <h1>Analytics & Reports</h1>
+    </header>
+
+    <section class="grid-container">
+      <div class="card wide">
+        <h3>Sales & Purchase Trends</h3>
+        <canvas id="salesChart" height="100"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Order Summary</h3>
+        <canvas id="orderChart" height="100"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Top Selling Products</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Sold</th>
+              <th>Remaining</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each topSellingProducts}}
+              <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.sold}}</td>
+                <td>{{this.remaining}}</td>
+                <td>$ {{this.price}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Low Stock Items</h3>
+        <ul class="low-stock">
+          {{#each lowStockItems}}
+            <li>
+              {{this.productName}} - {{this.quantity}} units
+              <span class="low">Low</span>
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+{{#contentFor "scripts"}}
+<script>
+  // Sales & Purchase Chart
+  const ctx1 = document.getElementById('salesChart').getContext('2d');
+  new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [
+        { label: 'Purchase', data: [50000, 48000, 46000, 44000, 42000, 41000], backgroundColor: '#a5b4fc' },
+        { label: 'Sales', data: [52000, 50000, 47000, 45000, 43000, 42000], backgroundColor: '#6ee7b7' }
+      ]
+    }
+  });
+
+  // Order Summary Chart
+  const ctx2 = document.getElementById('orderChart').getContext('2d');
+  new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: ['Completed', 'Pending', 'Cancelled'],
+      datasets: [{
+        data: [65, 25, 10],
+        backgroundColor: ['#6ee7b7', '#a5b4fc', '#fca5a5']
+      }]
+    }
+  });
+</script>
+{{/contentFor}}
