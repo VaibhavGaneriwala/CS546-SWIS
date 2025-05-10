@@ -1,4 +1,3 @@
-// seed.js
 import { ObjectId } from 'mongodb'
 import { dbConnection } from './config/mongoConnection.js'
 import bcrypt from 'bcryptjs'
@@ -121,6 +120,14 @@ const transactionDocs = [
     actionId: new ObjectId(),
     actionName: 'purchase',
     quantityChanged: 4,
+    logTimestamp: new Date()
+  },
+  {
+    productId: id1,
+    userId,
+    actionId: new ObjectId(),
+    actionName: 'sell',
+    quantityChanged: 7,
     logTimestamp: new Date()
   }
 ]

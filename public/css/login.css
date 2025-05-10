@@ -117,9 +117,3 @@ input[type="password"] {
   text-align: center;
   border: 1px solid #ef9a9a;
 }
-.products {
-  margin-bottom: 2rem;
-}
-.products + #addProductSection {
-  margin-top: 2rem;
-}
