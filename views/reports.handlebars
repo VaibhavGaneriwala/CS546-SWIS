@@ -33,30 +33,6 @@
       </div>
 
       <div class="card">
-        <h3>Top Selling Products</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Sold</th>
-              <th>Remaining</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each topSellingProducts}}
-              <tr>
-                <td>{{this.name}}</td>
-                <td>{{this.sold}}</td>
-                <td>{{this.remaining}}</td>
-                <td>$ {{this.price}}</td>
-              </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card">
         <h3>Low Stock Items</h3>
         <ul class="low-stock">
           {{#each lowStockItems}}

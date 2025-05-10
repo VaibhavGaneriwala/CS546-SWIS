@@ -1,81 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{{title}}}</title>
-  <link rel="stylesheet" href="/css/dashboard.css">
-</head>
-<body>
   <div class="dashboard">
-  <aside class="sidebar">
-    <div class="logo">
-      <img src="/images/swisLogo.png" alt="SWIS Logo">
-      <h2>Dashboard</h2>
-    </div>
-    <nav class="menu">
-      <a href="/dashboard" class="active">Dashboard</a>
-      <a href="/inventory">Inventory</a>
-      <a href="/reports">Reports</a>
-      <a href="/settings">Settings</a>
-      <a href="/logout">Log Out</a>
-    </nav>
-  </aside>
   <main class="main">
-
     <section class="grid-container">
+      
       <div class="card">
-        <h3>Sales Overview</h3>
+        <h3>Price Overview</h3>
         <div class="stats-row">
-          <div><strong>$ {{dummySales}}</strong><br>Sales</div>
-          <div><strong>$ {{dummyRevenue}}</strong><br>Revenue</div>
-          <div><strong>$ {{dummyProfit}}</strong><br>Profit</div>
-          <div><strong>$ {{dummyCost}}</strong><br>Cost</div>
+          <div><strong>$ {{totalPrice}}</strong><br>Total Price</div>
         </div>
       </div>
 
       <div class="card">
         <h3>Inventory Summary</h3>
         <div class="stats-row">
+          <div>Number of Products<br><strong>{{productCount}}</strong></div>
           <div><strong>{{totalQuantity}}</strong><br>Quantity in Hand</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Purchase Overview</h3>
-        <div class="stats-row">
-          <div><strong>82</strong><br>Purchase</div>
-          <div><strong>$ 13,573</strong><br>Cost</div>
-          <div><strong>5</strong><br>Cancel</div>
-          <div><strong>$ 17,432</strong><br>Return</div>
         </div>
       </div>
 
       <div class="card">
         <h3>Product Summary</h3>
         <div class="stats-row">
-          <div><strong>{{supplierCount}}</strong><br>Number of Suppliers</div>
-          <div><strong>{{categoryCount}}</strong><br>Number of Categories</div>
+          <div>Number of Categories<br><strong>{{categoryCount}}</strong></div>
         </div>
       </div>
     </section>
   </main>
 </div>
-
-{{#contentFor "scripts"}}
-<script>
-  const ctx1 = document.getElementById('salesChart').getContext('2d');
-  new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [
-        { label: 'Purchase', data: [50000, 48000, 46000, 44000, 42000, 41000], backgroundColor: '#a5b4fc' },
-        { label: 'Sales', data: [52000, 50000, 47000, 45000, 43000, 42000], backgroundColor: '#6ee7b7' }
-      ]
-    }
-  });
-</script>
-{{/contentFor}}
-</body>
-</html>

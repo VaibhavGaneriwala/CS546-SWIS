@@ -8,10 +8,8 @@ const SALT_ROUNDS = 10
 const db = await dbConnection()
 const inventory = db.collection('inventory')
 const users = db.collection('users')
-const transactions = db.collection('transactions')
 await inventory.deleteMany({})
 await users.deleteMany({})
-await transactions.deleteMany({})
 const hashedPassword = await bcrypt.hash('Password@1', SALT_ROUNDS)
 
 const testUser = {
@@ -114,7 +112,5 @@ const transactionDocs = [
     logTimestamp: new Date()
   }
 ]
-
-await transactions.insertMany(transactionDocs)
 
 process.exit(0)

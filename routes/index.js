@@ -3,6 +3,7 @@ import userRoutes from './users.js';
 import inventoryRoutes from './inventory.js';
 import dashboardRoutes from './dashboard.js';
 import reportsRoutes from './reports.js';
+import settingsRoutes from './settings.js';
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.use('/', userRoutes);
 router.use('/', inventoryRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/', reportsRoutes);
-
+router.use('/settings', settingsRoutes);
 export default function configRoutes(app) {
     app.use('/', router);
 }

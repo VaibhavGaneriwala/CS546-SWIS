@@ -28,21 +28,22 @@
       <section class="overview">
         <div class="card">
           <p>Categories</p>
-           <h3>{{categoryCount}}</h3>
+          <h3>{{categoryCount}}</h3>
           <small>Last 7 days</small>
         </div>
         <div class="card">
           <p>Total Products</p>
           <h3>{{products.length}}</h3>
-          <small>${{dummyRevenue}} Revenue</small>
+          <small>Total Value: ${{totalInventoryValue}}</small>
         </div>
         <div class="card">
-          <p>Top Selling</p>
-          <small>${{dummyCost}} Cost</small>
+          <p>Price Overview</p>
+          <h3>${{totalInventoryValue}}</h3>
+          <small>Total Price</small>
         </div>
         <div class="card">
           <p>Low Stocks</p>
-           <h3>{{lowStockCount}}</h3>
+          <h3>{{lowStockCount}}</h3>
           <small>{{noStockCount}} Not in stock</small>
         </div>
       </section>
@@ -64,6 +65,7 @@
               <th>Threshold Value</th>
               <th>Expiry Date</th>
               <th>Availability</th>
+              <th>Formatted Price</th>
             </tr>
           </thead>
           <tbody>
@@ -83,6 +85,7 @@
                     In stock
                   {{/if}}
                 </td>
+                <td>${{formattedPrice}}</td>
               </tr>
             {{/each}}
           </tbody>

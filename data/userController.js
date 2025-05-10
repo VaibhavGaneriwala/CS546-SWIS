@@ -55,4 +55,16 @@ const loginUser = async (username, password) => {
     }
 };
 
-export { registerUser, loginUser };
+const updateUser = async (userId, updates) => {
+    try {
+        const usersCol = await users();
+        const updateResult = await usersCol.updateOne({ _id: userId }, { $set: updates });
+        if (!updateResult.acknowledged || updateResult.modifiedCount === 0) throw { status: 500, message: "Could not update user" };
+
+        return { status: 200, message: "User updated successfully" };
+    } catch (e) {
+        throw { status: 500, message: e.message };
+    }
+};
+
+export { registerUser, loginUser, updateUser };

@@ -13,11 +13,18 @@ router.get("/inventory", authMiddleware, async (req, res) => {
         const lowStockCount = products.filter(p => p.quantity <= p.minThreshold).length;
         const noStockCount = products.filter(p => p.quantity === 0).length;
         
-        // Add stock status to each product
+        // Calculate total inventory value
+        const totalInventoryValue = products.reduce((total, product) => {
+            const productValue = product.quantity * product.unitPrice;
+            return total + productValue;
+        }, 0);
+        
+        // Add stock status and formatted price to each product
         const productsWithStatus = products.map(product => ({
             ...product,
             stockStatus: product.quantity === 0 ? 'out-stock' : 
-                        product.quantity <= product.minThreshold ? 'low-stock' : 'in-stock'
+                        product.quantity <= product.minThreshold ? 'low-stock' : 'in-stock',
+            formattedPrice: (product.quantity * product.unitPrice).toFixed(2)
         }));
         
         res.render('inventory', {
@@ -27,7 +34,8 @@ router.get("/inventory", authMiddleware, async (req, res) => {
             lowStockCount,
             noStockCount,
             dummyRevenue: 18300,
-            dummyCost: 17432
+            dummyCost: 17432,
+            totalInventoryValue: totalInventoryValue.toFixed(2)
         });
     } catch (e) {
         return res.status(404).render("error", {

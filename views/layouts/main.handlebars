@@ -5,16 +5,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/images/swisLogo.png">
-    <link rel="stylesheet" href="/css/styles.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" />
-    <title>{{title}}</title>
-    {{{block "styles"}}}
+    <link rel="stylesheet" href="/css/{{{cssFile}}}" />
+    <title>{{{title}}}</title>
 </head>
-
 <body>
+    <aside class="sidebar">
+    <div class="logo">
+      <img src="/images/swisLogo.png" alt="SWIS Logo">
+      <h2>Dashboard</h2>
+    </div>
+    <nav class="menu">
+      <a href="/dashboard" class="active">Dashboard</a>
+      <a href="/inventory">Inventory</a>
+      <a href="/reports">Reports</a>
+      <a href="/settings">Settings</a>
+      <a href="/logout">Log Out</a>
+    </nav>
+  </aside>
     {{{body}}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    {{{block "scripts"}}}
 </body>
 
 </html>
