@@ -1,14 +1,7 @@
 import { inventory } from '../config/mongoCollections.js';
 import * as helpers from "../utils/validations.js";
 
-export async function addProduct(
-    productName,
-    categoryName,
-    quantity,
-    minThreshold,
-    unitPrice,
-    restockSuggestion
-) {
+export async function addProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion) {
     productName = helpers.validProductName(productName);
     categoryName = helpers.validCategoryName(categoryName);
     quantity = helpers.validQuantity(quantity);
@@ -18,45 +11,25 @@ export async function addProduct(
 
     const inventoryCollection = await inventory();
 
-    // check for duplicate product name
     const existingProduct = await inventoryCollection.findOne({ productName: productName });
-    if (existingProduct) {
-        throw new Error("A product with this name already exists");
-    }
+    if (existingProduct) throw new Error("A product with this name already exists");
 
     const newProduct = {
-        productName,
-        categoryName,
-        quantity,
-        minThreshold,
-        unitPrice,
-        restockSuggestion,
-        lastUpdated: helpers.createCurrentDateandTime()
+        productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, lastUpdated: helpers.createCurrentDateandTime()
     };
 
     const insertInfo = await inventoryCollection.insertOne(newProduct);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId) {
-        throw new Error("Could not add product");
-    }
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error("Could not add product");
 
     return true;
 }
 
-export async function updateProduct(
-    productName,
-    categoryName,
-    quantity,
-    minThreshold,
-    unitPrice,
-    restockSuggestion
-) {
+export async function updateProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion) {
     const inventoryCollection = await inventory();
 
     // check if product exists
     const existingProduct = await inventoryCollection.findOne({ productName });
-    if (!existingProduct) {
-        throw new Error("Product not found");
-    }
+    if (!existingProduct) throw new Error("Product not found");
 
     // create update object with only the fields that are provided
     const updateData = {};
