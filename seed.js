@@ -20,17 +20,7 @@ const testUser = {
   email: 'batman@gmail.com',
   username: 'lego',
   password: hashedPassword,
-  profilePicture: '/static/profile.png',
-  phone: '+15555550123',
-  address: {
-    street: '456 Main St',
-    city: 'Seattle',
-    state: 'WA',
-    zip: '98101'
-  },
-  roleid: new ObjectId(),
-  roleName: 'supplier',
-  isActive: true,
+  roleName: 'admin',
   createdAt: new Date()
 }
 
@@ -39,6 +29,7 @@ const { insertedId: userId } = await users.insertOne(testUser)
 const id1 = new ObjectId();
 const id2 = new ObjectId();
 const id3 = new ObjectId();
+const id4 = new ObjectId();
 
 const items = [
   {
@@ -77,6 +68,19 @@ const items = [
     restockSuggestion: {
       recommendedQty: 50,
       nextRestockDate: '2025-06-12'
+    },
+    lastUpdated: new Date()
+  },
+  {
+    _id: id4,
+    productName: 'Thermal Ribbon',
+    categoryName: 'supplies',
+    quantity: 0,
+    minThreshold: 5,
+    unitPrice: 7.49,
+    restockSuggestion: {
+      recommendedQty: 100,
+      nextRestockDate: '2025-06-20'
     },
     lastUpdated: new Date()
   }
