@@ -1,15 +1,14 @@
-// Middleware to check if user is already logged in
-export const redirectIfAuthenticated = (req, res, next) => {
-    if (req.session.user) {
-        return res.redirect('/dashboard');
-    }
-    next();
-};
+export { authMiddleware };
 
-// Middleware to check if user is not logged in
-export const requireAuth = (req, res, next) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    next();
+const authMiddleware = (options = {}) => {
+    return (req, res, next) => {
+        const isAuthenticated = !!req.session.user;
+        if (options.requireAuth && !isAuthenticated) {
+            return res.redirect('/login');
+        }
+        if (options.authMiddleware && isAuthenticated) {
+            return res.redirect('/dashboard');
+        }
+        next();
+    };
 };

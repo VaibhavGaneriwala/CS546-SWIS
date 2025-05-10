@@ -1,16 +1,16 @@
 import express from 'express';
 import { registerUser, loginUser } from '../data/userController.js';
-import { redirectIfAuthenticated, requireAuth } from '../src/middlewares/auth.js';
+import { authMiddleware } from '../middlewares/auth.js';
 import *  as helpers from "../utils/validations.js";
 
 const router = express.Router();
 
 // Auth routes
-router.get('/login', redirectIfAuthenticated, (req, res) => {
+router.get('/login', authMiddleware, (req, res) => {
     res.render('login', { title: 'Login | SWIS' });
 });
 
-router.post('/login', redirectIfAuthenticated, async (req, res) => {
+router.post('/login', authMiddleware, async (req, res) => {
     let { username, password } = req.body;
 
     // req validation
@@ -46,11 +46,11 @@ router.post('/login', redirectIfAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/register', redirectIfAuthenticated, (req, res) => {
+router.get('/register', authMiddleware, (req, res) => {
     res.render('register', { title: 'Register | SWIS' });
 });
 
-router.post('/register', redirectIfAuthenticated, async (req, res) => {
+router.post('/register', authMiddleware, async (req, res) => {
     let { firstName, lastName, email, username, password } = req.body;
 
     // req validation
@@ -94,15 +94,5 @@ router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/login');
 });
-
-
-// Protected routes
-// router.get('/dashboard', requireAuth, (req, res) => {
-//     res.render('dashboard', {
-//         title: 'Dashboard | SWIS',
-//         // user: req.session.user
-//     });
-// });
-
 
 export default router;

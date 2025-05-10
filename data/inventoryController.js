@@ -69,7 +69,7 @@ async function removeProduct(productName) {
     return true;
 }
 
-export async function getProductByName(productName) {
+async function getProductByName(productName) {
     if (!productName) throw { status: 400, message: "You must give Product Name!" };
     productName = helpers.validProductName(productName);
 
@@ -81,7 +81,7 @@ export async function getProductByName(productName) {
     return product;
 }
 
-export async function getAllProducts() {
+async function getAllProducts() {
     const inventoryCollection = await inventory();
     const allProducts = await inventoryCollection.find({}).toArray();
 

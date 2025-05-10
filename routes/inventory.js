@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { addProduct, updateProduct, removeProduct, getProductByName, getAllProducts } from "../data/inventoryController.js";
-import { redirectIfAuthenticated, requireAuth } from '../src/middlewares/auth.js';
+import { authMiddleware } from '../middlewares/auth.js';
 import * as helpers from "../utils/validations.js";
 
 const router = Router();
 
 // Render inventory page
-router.get("/inventory", requireAuth, async (req, res) => {
+router.get("/inventory", authMiddleware, async (req, res) => {
     try {
         const data = await getAllProducts();
         res.render('inventory', {
@@ -22,7 +22,7 @@ router.get("/inventory", requireAuth, async (req, res) => {
 });
 
 // Export inventory to CSV
-router.get("/inventory/export", requireAuth, async (req, res) => {
+router.get("/inventory/export", authMiddleware, async (req, res) => {
     try {
         const data = await getAllProducts();
         
@@ -57,7 +57,7 @@ router.get("/inventory/export", requireAuth, async (req, res) => {
 });
 
 // search for product by name
-router.get("/inventory/:productName", requireAuth, async (req, res) => {
+router.get("/inventory/:productName", authMiddleware, async (req, res) => {
     try {
         req.params.productName = req.params.productName.trim();
         helpers.validProductName(req.params.productName);
@@ -73,7 +73,7 @@ router.get("/inventory/:productName", requireAuth, async (req, res) => {
 });
 
 // insert new product into DB
-router.post("/inventory", requireAuth, async (req, res) => {
+router.post("/inventory", authMiddleware, async (req, res) => {
     try {
         const { productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion } = req.body;
 

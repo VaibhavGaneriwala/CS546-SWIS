@@ -1,10 +1,10 @@
 import express from 'express'
-import { getDashboardData } from '../data/dashboard.js'
-import { redirectIfAuthenticated, requireAuth } from '../src/middlewares/auth.js'
+import { getDashboardData } from '../data/dashboardController.js'
+import { authMiddleware } from '../middlewares/auth.js'
 
 const router = express.Router()
 
-router.get('/', requireAuth, async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try{
     const data = await getDashboardData()
     res.render('dashboard', { title: 'Dashboard', ...data })

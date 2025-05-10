@@ -1,7 +1,7 @@
 import express from 'express';
 import userRoutes from './users.js';
 import inventoryRoutes from './inventory.js';
-import dashboardRoutes from './dashboardRoutes.js';
+import dashboardRoutes from './dashboard.js';
 import reportsRoutes from './reports.js';
 
 const router = express.Router();
