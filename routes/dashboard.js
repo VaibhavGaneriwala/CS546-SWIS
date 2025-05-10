@@ -7,7 +7,7 @@ const router = express.Router()
 router.get('/', authMiddleware, async (req, res) => {
   try{
     const data = await getDashboardData()
-    res.render('dashboard', { title: 'Dashboard', ...data })
+    res.render('dashboard', { title: 'Dashboard | SWIS', ...data })
   }catch(e){
     res.status(404).render('error', { title: 'Dashboard Error', error: e.message })
   }

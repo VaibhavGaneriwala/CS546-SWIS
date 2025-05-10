@@ -58,21 +58,6 @@ body {
   flex-direction: column;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-}
-
-.header input {
-  width: 60%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
 .profile {
   display: flex;
   align-items: center;

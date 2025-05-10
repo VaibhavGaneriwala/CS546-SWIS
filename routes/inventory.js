@@ -8,10 +8,26 @@ const router = Router();
 // Render inventory page
 router.get("/inventory", authMiddleware, async (req, res) => {
     try {
-        const data = await getAllProducts();
+        const products = await getAllProducts();
+        const categoryCount = new Set(products.map(p => p.categoryName?.toLowerCase())).size;
+        const lowStockCount = products.filter(p => p.quantity <= p.minThreshold).length;
+        const noStockCount = products.filter(p => p.quantity === 0).length;
+        
+        // Add stock status to each product
+        const productsWithStatus = products.map(product => ({
+            ...product,
+            stockStatus: product.quantity === 0 ? 'out-stock' : 
+                        product.quantity <= product.minThreshold ? 'low-stock' : 'in-stock'
+        }));
+        
         res.render('inventory', {
             title: 'Inventory | SWIS',
-            ...data
+            products: productsWithStatus,
+            categoryCount,
+            lowStockCount,
+            noStockCount,
+            dummyRevenue: 18300,
+            dummyCost: 17432
         });
     } catch (e) {
         return res.status(404).render("error", {

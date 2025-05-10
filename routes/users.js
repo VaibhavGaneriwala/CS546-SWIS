@@ -1,16 +1,16 @@
 import express from 'express';
 import { registerUser, loginUser } from '../data/userController.js';
-import { authMiddleware } from '../middlewares/auth.js';
+import { guestMiddleware } from '../middlewares/auth.js';
 import *  as helpers from "../utils/validations.js";
 
 const router = express.Router();
 
 // Auth routes
-router.get('/login', authMiddleware, (req, res) => {
+router.get('/login', guestMiddleware, (req, res) => {
     res.render('login', { title: 'Login | SWIS' });
 });
 
-router.post('/login', authMiddleware, async (req, res) => {
+router.post('/login', guestMiddleware, async (req, res) => {
     let { username, password } = req.body;
 
     // req validation
@@ -46,11 +46,11 @@ router.post('/login', authMiddleware, async (req, res) => {
     }
 });
 
-router.get('/register', authMiddleware, (req, res) => {
+router.get('/register', guestMiddleware, (req, res) => {
     res.render('register', { title: 'Register | SWIS' });
 });
 
-router.post('/register', authMiddleware, async (req, res) => {
+router.post('/register', guestMiddleware, async (req, res) => {
     let { firstName, lastName, email, username, password } = req.body;
 
     // req validation

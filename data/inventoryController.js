@@ -84,8 +84,5 @@ async function getProductByName(productName) {
 async function getAllProducts() {
     const inventoryCollection = await inventory();
     const allProducts = await inventoryCollection.find({}).toArray();
-
-    if (!allProducts) throw new Error("No products found");
-
-    return allProducts;
+    return allProducts || [];
 }

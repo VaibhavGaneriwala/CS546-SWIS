@@ -1,14 +1,15 @@
-export { authMiddleware };
+// Middleware for protected routes (dashboard, inventory, etc.)
+export const authMiddleware = (req, res, next) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    next();
+};
 
-const authMiddleware = (options = {}) => {
-    return (req, res, next) => {
-        const isAuthenticated = !!req.session.user;
-        if (options.requireAuth && !isAuthenticated) {
-            return res.redirect('/login');
-        }
-        if (options.authMiddleware && isAuthenticated) {
-            return res.redirect('/dashboard');
-        }
-        next();
-    };
+// Middleware for auth routes (login, register)
+export const guestMiddleware = (req, res, next) => {
+    if (req.session.user) {
+        return res.redirect('/dashboard');
+    }
+    next();
 };
