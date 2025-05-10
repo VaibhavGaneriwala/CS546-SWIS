@@ -19,6 +19,7 @@ router.get("/inventory", requireAuth, async (req, res) => {
             error: e.message
         })
     }
+
 })
 
 // search for product by name
@@ -39,29 +40,48 @@ router.get("/inventory/:productName", requireAuth, async (req, res) => {
 
 // insert neq product into DB
 router.post("/inventory", requireAuth, async (req, res) => {
-    try {
-        helpers.validProductName(req.body.productName);
-        helpers.validCategoryName(req.body.categoryName);
-        helpers.validQuantity(req.body.quantity);
-        helpers.validMinThreshold(req.body.validMinThreshold);
-        helpers.validUnitPrice(req.body.unitPrice);
-        helpers.validRestockSuggestion(req.body.validRestockSuggestion);
+    try{
+        req.body.unitPrice = Number(req.body.unitPrice)
+        req.body.minThreshold = Number(req.body.minThreshold)
+        req.body.quantity = Number(req.body.quantity)
 
-        req.body.productName = req.body.productName.trim();
-        req.body.categoryName = req.body.categoryName.trim();
-        req.body.validRestockSuggestion.nextRestockDate = req.body.validRestockSuggestion.nextRestockDate.trim();
+        req.body.productName = req.body.productName.trim()
+        req.body.categoryName = req.body.categoryName.trim()
 
-        args = [req.body.productName, req.body.categoryName, req.body.quantity, req.body.quantity,
-        req.body.validMinThreshold, req.body.unitPrice, req.body.validRestockSuggestion
-        ];
-        const result = await addProduct(...args);
-        if (!result) throw new Error("addProduct function failed");
-    } catch (e) {
+        const restockSuggestion = {
+            recommendedQty: 0,
+            nextRestockDate: req.body["restockSuggestion.nextRestockDate"].trim()
+        }
+
+        helpers.validProductName(req.body.productName)
+        helpers.validCategoryName(req.body.categoryName)
+        helpers.validQuantity(req.body.quantity)
+        helpers.validMinThreshold(req.body.minThreshold)
+        helpers.validUnitPrice(req.body.unitPrice)
+        helpers.validRestockSuggestion(restockSuggestion)
+
+        const args = [
+            req.body.productName,
+            req.body.categoryName,
+            req.body.quantity,
+            req.body.minThreshold,
+            req.body.unitPrice,
+            restockSuggestion
+        ]
+
+        const result = await addProduct(...args)
+
+        if(!result){
+            throw new Error("addProduct function failed")
+        }
+
+        return res.redirect("/inventory")
+    }catch(e){
         return res.status(404).render("error", {
             title: "Error",
             error: e.message
-        });
+        })
     }
-});
+})
 
 export default router;

@@ -109,11 +109,17 @@ input[type="password"] {
   margin-bottom: 1rem;
 }
 .error-message {
-    background-color: #ffebee;
-    color: #c62828;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    text-align: center;
-    border: 1px solid #ef9a9a;
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  border: 1px solid #ef9a9a;
+}
+.products {
+  margin-bottom: 2rem;
+}
+.products + #addProductSection {
+  margin-top: 2rem;
 }

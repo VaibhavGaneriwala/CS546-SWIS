@@ -129,7 +129,7 @@ export async function removeProduct(productName) {
 
 export async function getProductByName(productName) {
     productName = helpers.validProductName(productName);
-
+    productName = productName.toLowerCase();
     const inventoryCollection = await inventory();
     const product = await inventoryCollection.findOne({ productName });
 
@@ -160,8 +160,6 @@ export async function getAllProducts() {
         }else{
             stockStatus = 'in-stock'
         }
-
-        
 
         return {
             ...item,

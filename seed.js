@@ -44,7 +44,7 @@ const id4 = new ObjectId()
 const items = [
   {
     _id: id1,
-    productName: 'Bluetooth Scanner',
+    productName: 'bluetooth scanner',
     categoryName: 'electronics',
     quantity: 5,
     minThreshold: 10,
@@ -57,7 +57,7 @@ const items = [
   },
   {
     _id: id2,
-    productName: 'Thermal Printer',
+    productName: 'printer',
     categoryName: 'electronics',
     quantity: 15,
     minThreshold: 10,
@@ -70,7 +70,7 @@ const items = [
   },
   {
     _id: id3,
-    productName: 'Barcode Labels',
+    productName: 'barcode labels',
     categoryName: 'supplies',
     quantity: 3,
     minThreshold: 8,
@@ -83,7 +83,7 @@ const items = [
   },
   {
     _id: id4,
-    productName: 'Thermal Ribbon',
+    productName: 'thermal ribbon',
     categoryName: 'supplies',
     quantity: 0,
     minThreshold: 5,
