@@ -1,0 +1,162 @@
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  background: #f6f8fb;
+  color: #333;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #fff;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+}
+
+.sidebar .logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar .logo img {
+  width: 50px;
+  margin-bottom: 10px;
+}
+
+.sidebar h2 {
+  color: #3a8dde;
+  font-size: 18px;
+}
+
+.menu {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu a {
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.menu a.active,
+.menu a:hover {
+  background-color: #eef6ff;
+  color: #2563eb;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.header input {
+  width: 60%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.stats-row div {
+  width: 45%;
+  margin-bottom: 10px;
+}
+
+.card.wide {
+  grid-column: span 2;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table th,
+table td {
+  padding: 8px 4px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.low-stock {
+  list-style: none;
+  padding: 0;
+}
+
+.low-stock li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.low-stock img {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.low {
+  background: #f87171;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}

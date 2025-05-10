@@ -1,27 +1,40 @@
-<header>
-    <h1>Smart Warehouse Inventory System</h1>
-</header>
-
-<main>
-    <section>
-        <h2>Login</h2>
-
-        <form id="loginForm" action="/login" method="POST">
-            <div class="username-section">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="password-section">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div>
-                <button type="submit">Login</button>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{{title}}}</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="container">
+    <div class="left-panel">
+      <div>
+        <img src="/images/swisLogo.png" alt="SWIS Logo">
+        <h1>Smart Warehouse Inventory System</h1>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="form-container">
+        <img src="/images/swisLogo.png" alt="SWIS Logo">
+        <div class="error-message" style="display: {{#if error}}block{{else}}none{{/if}}">{{error}}</div>
+        <h2>Log in to your account</h2>
+        <p>Welcome back! Please enter your details.</p>
+        <form action="/login" method="POST">
+            <label for="username">Username
+                <input id="username" name="username" type="text" placeholder="Enter your username" required>
+            </label>
+            <label for="password">Password
+                <input id="password" name="password" type="password" placeholder="Password" required>
+            </label>
+            <button class="btn" type="submit">Sign in</button>
         </form>
-    </section>
-</main>
-
-<footer>
-    <p>&copy; 2025 Smart Warehouse Inventory System</p>
-</footer>
+        <div class="signup">
+          Don't have an account? <a href="/register">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/main.js"></script>
+</body>
+</html>
