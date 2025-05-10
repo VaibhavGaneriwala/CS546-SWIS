@@ -21,6 +21,9 @@ const hbs = exphbs.create({
     },
     block: function (name) {
       return this._blocks && this._blocks[name] ? this._blocks[name] : '';
+    },
+    eq: function (a, b) {
+      return a === b;
     }
   }
 });

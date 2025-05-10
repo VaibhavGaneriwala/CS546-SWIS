@@ -36,9 +36,10 @@ const testUser = {
 
 const { insertedId: userId } = await users.insertOne(testUser)
 
-const id1 = new ObjectId();
-const id2 = new ObjectId();
-const id3 = new ObjectId();
+const id1 = new ObjectId()
+const id2 = new ObjectId()
+const id3 = new ObjectId()
+const id4 = new ObjectId()
 
 const items = [
   {
@@ -77,6 +78,19 @@ const items = [
     restockSuggestion: {
       recommendedQty: 50,
       nextRestockDate: '2025-06-12'
+    },
+    lastUpdated: new Date()
+  },
+  {
+    _id: id4,
+    productName: 'Thermal Ribbon',
+    categoryName: 'supplies',
+    quantity: 0,
+    minThreshold: 5,
+    unitPrice: 7.49,
+    restockSuggestion: {
+      recommendedQty: 100,
+      nextRestockDate: '2025-06-20'
     },
     lastUpdated: new Date()
   }

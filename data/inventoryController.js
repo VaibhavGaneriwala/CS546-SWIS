@@ -139,3 +139,46 @@ export async function getProductByName(productName) {
 
     return product;
 }
+
+export async function getAllProducts() {
+    const inventoryCollection = await inventory()
+    const rawProducts = await inventoryCollection.find({}).toArray()
+
+    const categoryCount = new Set(rawProducts.map(p => p.categoryName?.toLowerCase())).size
+
+    if(!rawProducts || rawProducts.length === 0){
+        throw("No products found")
+    }
+
+    const products = rawProducts.map((item) => {
+        let stockStatus
+
+        if(item.quantity === 0){
+            stockStatus = 'out-stock'
+        }else if(item.quantity <= item.minThreshold){
+            stockStatus = 'low-stock'
+        }else{
+            stockStatus = 'in-stock'
+        }
+
+        
+
+        return {
+            ...item,
+            stockStatus,
+        }
+    })
+
+    const lowStockCount = products.filter((p) => p.quantity <= p.minThreshold && p.quantity > 0).length
+
+    const noStockCount = products.filter((p) => p.quantity === 0).length
+
+    return {
+        products,
+        categoryCount,
+        lowStockCount,
+        noStockCount,
+        dummyRevenue: 25000,
+        dummyCost: 2500,
+    }
+}

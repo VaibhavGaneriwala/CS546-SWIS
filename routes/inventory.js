@@ -1,16 +1,25 @@
 import { Router } from 'express';
-import { addProduct, updateProduct, removeProduct, getProductByName } from "../data/inventoryController.js";
+import { addProduct, updateProduct, removeProduct, getProductByName, getAllProducts } from "../data/inventoryController.js";
 import { redirectIfAuthenticated, requireAuth } from '../src/middlewares/auth.js';
 import * as helpers from "../utils/validations.js";
-
 const router = Router();
 
 // Render inventory page
-router.get("/inventory", requireAuth, (req, res) => {
-    res.render('inventory', {
-        title: 'Inventory | SWIS'
-    });
-});
+router.get("/inventory", requireAuth, async (req, res) => {
+    try{
+        const products = await getAllProducts()
+
+        res.render('inventory', {
+            title: 'Inventory | SWIS',
+            ...products
+        })
+    }catch(e){
+        return res.status(404).render("error", {
+            title: "Error",
+            error: e.message
+        })
+    }
+})
 
 // search for product by name
 router.get("/inventory/:productName", requireAuth, async (req, res) => {
