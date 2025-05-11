@@ -21,31 +21,6 @@ body {
     min-height: 100vh;
 }
 
-.sidebar {
-    width: 220px;
-    background: #fff;
-    padding: 20px;
-    border-right: 1px solid #ddd;
-}
-
-.sidebar .logo {
-    color: #007bff;
-    margin-bottom: 30px;
-}
-
-.sidebar nav a {
-    display: block;
-    padding: 10px 0;
-    color: #333;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.sidebar nav a.active {
-    color: #007bff;
-    font-weight: bold;
-}
-
 .main-content {
     flex: 1;
     padding: 32px 40px;
