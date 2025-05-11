@@ -1,9 +1,10 @@
 import { inventory } from '../config/mongoCollections.js';
 import * as helpers from "../utils/validations.js";
+import { addAuditLog } from './auditController.js';
 
 export {addProduct, updateProduct, removeProduct, getProductByName, getAllProducts};
 
-async function addProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion) {
+async function addProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, userId, name) {
 
     if (!productName || !categoryName || !quantity || !minThreshold || !unitPrice || !restockSuggestion) throw { status: 400, message: "You must supply all fields!" };
 
@@ -24,10 +25,19 @@ async function addProduct(productName, categoryName, quantity, minThreshold, uni
     const insertInfo = await inventoryCollection.insertOne(newProduct);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error("Could not add product");
 
+    await addAuditLog(userId, name, 'addProduct', {
+        productName,
+        categoryName,
+        quantity,
+        minThreshold,
+        unitPrice,
+        restockSuggestion
+    })
+
     return true;
 }
 
-async function updateProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion) {
+async function updateProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, userId, name) {
 
     if (!productName || !categoryName || !quantity || !minThreshold || !unitPrice || !restockSuggestion) throw { status: 400, message: "You must supply all fields!" };
 
@@ -50,10 +60,15 @@ async function updateProduct(productName, categoryName, quantity, minThreshold, 
 
     if (!updateInfo.acknowledged || updateInfo.modifiedCount === 0) throw new Error("Could not update product");
 
+    await addAuditLog(userId, name, 'updateProduct', {
+        before: existingProduct,
+        after: updatedProduct
+    })
+
     return true;
 }
 
-async function removeProduct(productName) {
+async function removeProduct(productName, userId, name) {
     if (!productName) throw { status: 400, message: "You must give Product Name!" };
     productName = helpers.validProductName(productName);
 
@@ -66,6 +81,10 @@ async function removeProduct(productName) {
     const deleteInfo = await inventoryCollection.deleteOne({ productName });
     if (!deleteInfo.acknowledged || deleteInfo.deletedCount === 0) throw new Error("Could not remove product");
 
+    await addAuditLog(userId, name, 'removeProduct', {
+        deleted: existingProduct
+    })
+    
     return true;
 }
 

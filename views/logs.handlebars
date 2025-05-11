@@ -1,0 +1,25 @@
+<div class="audit-container">
+  <h1>Audit Logs</h1>
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>User ID</th>
+        <th>Action</th>
+        <th>Details</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each logs}}
+      <tr>
+        <td>{{userName}}</td>
+        <td>{{userId}}</td>
+        <td>{{action}}</td>
+        <td><pre>{{{json details}}}</pre></td>
+        <td>{{timestamp}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

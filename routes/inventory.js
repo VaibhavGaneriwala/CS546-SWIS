@@ -148,7 +148,9 @@ router.post("/inventory", authMiddleware, async (req, res) => {
             }
         ];
 
-        const result = await addProduct(...args);
+        const fullName = `${req.session.user.firstName} ${req.session.user.lastName}`
+
+        const result = await addProduct(...args, req.session.user._id, fullName);
         if (!result) throw new Error("Failed to add product");
 
         res.status(200).json({ message: "Product added successfully" });
