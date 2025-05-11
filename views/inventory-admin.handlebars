@@ -1,10 +1,10 @@
 <div class="container">
     <main class="main-content">
         <header class="top-bar">
-            <form method="GET" action="/inventory" style="width: 60%; display: flex; gap: 8px; align-items: center;">
+            <form method="GET" action="/inventory/admin" style="width: 60%; display: flex; gap: 8px; align-items: center;">
                 <input type="text" name="search" placeholder="Search product" value="{{search}}" style="width: 100%;" />
                 {{#if search}}
-                <a href="/inventory"
+                <a href="/inventory/admin"
                     style="padding: 8px 14px; background: #eee; border-radius: 6px; color: #333; text-decoration: none; font-size: 15px; border: 1px solid #ddd;">Clear</a>
                 {{/if}}
             </form>
@@ -55,6 +55,7 @@
                         <th>Expiry Date</th>
                         <th>Availability</th>
                         <th>Total Price</th>
+                        <th>Edit/Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,16 +77,20 @@
                             {{/if}}
                         </td>
                         <td>${{formattedPrice}}</td>
+                        <td>
+                            <button onclick="editProduct('{{productName}}')">Edit</button>
+                            <button onclick="deleteProduct('{{_id}}')">Delete</button>
+                        </td>
                     </tr>
                     {{/each}}
                 </tbody>
             </table>
             <div class="pagination">
                 <button {{#if (eq currentPage 1)}}disabled{{/if}}
-                    onclick="window.location.href='/inventory?page={{subtract currentPage 1}}'">Previous</button>
+                    onclick="window.location.href='/inventory/admin?page={{subtract currentPage 1}}'">Previous</button>
                 <span>Page {{currentPage}} of {{totalPages}}</span>
                 <button {{#if (eq currentPage totalPages)}}disabled{{/if}}
-                    onclick="window.location.href='/inventory?page={{add currentPage 1}}'">Next</button>
+                    onclick="window.location.href='/inventory/admin?page={{add currentPage 1}}'">Next</button>
             </div>
         </section>
     </main>
@@ -203,4 +208,31 @@
             closeAddProductModal();
         }
     }
+
+    function deleteProduct(productId) {
+        if(!productId){
+            console.error('Error:', error)
+            const errorElement = document.getElementById('productNameError')
+            errorElement.textContent = 'No product ID provided'
+            errorElement.style.display = 'block'
+            return
+        }
+
+        fetch(`/inventory/${productId}`, {
+            method: 'DELETE'
+        })
+        .then(res => {
+            if(res.ok){
+                window.location.reload()
+            }else{
+                res.json().then(err => {
+                    console.error('Error:', error)
+                    const errorElement = document.getElementById('productNameError')
+                    errorElement.textContent = err.message || 'Delete failed'
+                    errorElement.style.display = 'block'
+                })
+            }
+        })
+    }
+
 </script>

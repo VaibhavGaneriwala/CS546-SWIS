@@ -1,0 +1,159 @@
+<div class="container">
+    <main class="main-content">
+        <header class="top-bar">
+            <form method="GET" action="/inventory/user" style="width: 60%; display: flex; gap: 8px; align-items: center;">
+                <input type="text" name="search" placeholder="Search product" value="{{search}}" style="width: 100%;" />
+                {{#if search}}
+                <a href="/inventory/user"
+                    style="padding: 8px 14px; background: #eee; border-radius: 6px; color: #333; text-decoration: none; font-size: 15px; border: 1px solid #ddd;">Clear</a>
+                {{/if}}
+            </form>
+            <div class="profile"></div>
+        </header>
+
+        <section class="overview">
+            <div class="card">
+                <p>Categories</p>
+                <h3>{{categoryCount}}</h3>
+                <small>Last 7 days</small>
+            </div>
+            <div class="card">
+                <p>Total Products</p>
+                <h3>{{totalProducts}}</h3>
+                <small>Total Value: ${{totalInventoryValue}}</small>
+            </div>
+            <!--
+            <div class="card">
+                <p>Price Overview</p>
+                <h3>${{totalInventoryValue}}</h3>
+                <small>Total Price</small>
+            </div>
+            !-->
+            <div class="card">
+                <p>Low Stocks</p>
+                <h3>{{lowStockCount}}</h3>
+                <small>{{noStockCount}} Out of stock</small>
+            </div>
+        </section>
+
+        <section class="products">
+            <div class="product-header">
+                <h2>Products</h2>
+                <div class="buttons">
+                    <button class="download" onclick="downloadCSV()">Download all</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Products</th>
+                        <th>Category</th>
+                        <th>Buying Price</th>
+                        <th>Quantity</th>
+                        <th>Threshold Value</th>
+                        <th>Expiry Date</th>
+                        <th>Availability</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                        <td>{{productName}}</td>
+                        <td>{{categoryName}}</td>
+                        <td>${{unitPrice}}</td>
+                        <td>{{quantity}} units</td>
+                        <td>{{minThreshold}} units</td>
+                        <td>{{restockSuggestion.nextRestockDate}}</td>
+                        <td class="{{stockStatus}}">
+                            {{#if (eq stockStatus 'out-stock')}}
+                            Out of stock
+                            {{else if (eq stockStatus 'low-stock')}}
+                            Low stock
+                            {{else}}
+                            In stock
+                            {{/if}}
+                        </td>
+                        <td>${{formattedPrice}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <div class="pagination">
+                <button {{#if (eq currentPage 1)}}disabled{{/if}}
+                    onclick="window.location.href='/inventory/user?page={{subtract currentPage 1}}'">Previous</button>
+                <span>Page {{currentPage}} of {{totalPages}}</span>
+                <button {{#if (eq currentPage totalPages)}}disabled{{/if}}
+                    onclick="window.location.href='/inventory/user?page={{add currentPage 1}}'">Next</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    function downloadCSV() {
+        window.location.href = '/inventory/export';
+    }
+
+    function openAddProductModal() {
+        document.getElementById('addProductModal').style.display = 'block';
+    }
+
+    function closeAddProductModal() {
+        document.getElementById('addProductModal').style.display = 'none';
+    }
+
+    async function handleAddProduct(event) {
+        event.preventDefault();
+
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+        const formData = {
+            productName: document.getElementById('productName').value,
+            categoryName: document.getElementById('categoryName').value,
+            quantity: parseInt(document.getElementById('quantity').value),
+            minThreshold: parseInt(document.getElementById('minThreshold').value),
+            unitPrice: parseFloat(document.getElementById('unitPrice').value),
+            restockSuggestion: {
+                nextRestockDate: document.getElementById('nextRestockDate').value,
+                recommendedQty: parseInt(document.getElementById('recommendedQty').value)
+            }
+        };
+
+        try {
+            const response = await fetch('/inventory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                // Close modal and refresh page
+                closeAddProductModal();
+                window.location.reload();
+            } else {
+                const error = await response.json();
+                // Display error message
+                const errorElement = document.getElementById('productNameError');
+                errorElement.textContent = error.message || 'Failed to add product';
+                errorElement.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            const errorElement = document.getElementById('productNameError');
+            errorElement.textContent = 'An error occurred while adding the product';
+            errorElement.style.display = 'block';
+        }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+        const modal = document.getElementById('addProductModal');
+        if (event.target === modal) {
+            closeAddProductModal();
+        }
+    }
+</script>

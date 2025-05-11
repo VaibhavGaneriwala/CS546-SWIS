@@ -23,7 +23,7 @@ router.get('/', authMiddleware, async (req, res) => {
         const { firstName, lastName, email, username } = userDoc
         res.render('settings', { 
             title: 'Settings | SWIS',
-            user: { firstName, lastName, email, username },
+            user: { ...req.session.user, firstName, lastName, email, username },
             cssFile: 'settings.css'
         })
     } catch (e) {
