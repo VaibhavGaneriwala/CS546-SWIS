@@ -71,7 +71,7 @@
   }
   
   .overview .card {
-    background: #333;
+    background: gray;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0,0,0,0.05);
@@ -97,7 +97,7 @@
   
   .products table {
     width: 100%;
-    background: #333;
+    background: gray;
     border-collapse: collapse;
     border-radius: 8px;
     overflow: hidden;

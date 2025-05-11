@@ -5,24 +5,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/images/swisLogo.png">
+    {{#if user}}
+    <link rel="stylesheet" href="/css/main.css" />
+    {{/if}}
     <link rel="stylesheet" href="/css/{{{cssFile}}}" />
     <title>{{{title}}}</title>
 </head>
+
 <body>
-    <aside class="sidebar">
-    <div class="logo">
-      <img src="/images/swisLogo.png" alt="SWIS Logo">
-      <h2>Dashboard</h2>
+    <div class="app-container">
+        {{#if user}}
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="/images/swisLogo.png" alt="SWIS Logo" style="max-width: 60px; margin-bottom: 8px;">
+            </div>
+            <nav class="menu">
+                <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
+                <a href="/inventory" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
+                <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
+                <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
+                <a href="/logout">Log Out</a>
+            </nav>
+        </aside>
+        {{/if}}
+        {{{body}}}
     </div>
-    <nav class="menu">
-      <a href="/dashboard" class="active">Dashboard</a>
-      <a href="/inventory">Inventory</a>
-      <a href="/reports">Reports</a>
-      <a href="/settings">Settings</a>
-      <a href="/logout">Log Out</a>
-    </nav>
-  </aside>
-    {{{body}}}
 </body>
 
 </html>

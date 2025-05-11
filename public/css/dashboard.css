@@ -10,48 +10,6 @@ body {
   height: 100vh;
 }
 
-.sidebar {
-  width: 220px;
-  background-color: #fff;
-  border-right: 1px solid #ddd;
-  padding: 20px;
-}
-
-.sidebar .logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.sidebar .logo img {
-  width: 50px;
-  margin-bottom: 10px;
-}
-
-.sidebar h2 {
-  color: #3a8dde;
-  font-size: 18px;
-}
-
-.menu {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.menu a {
-  padding: 10px;
-  color: #333;
-  text-decoration: none;
-  border-radius: 6px;
-}
-
-.menu a.active,
-.menu a:hover {
-  background-color: #eef6ff;
-  color: #2563eb;
-}
-
 .main {
   flex: 1;
   display: flex;
