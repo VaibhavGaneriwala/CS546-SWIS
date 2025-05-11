@@ -1,65 +1,68 @@
-{{#contentFor "styles"}}
-<link rel="stylesheet" href="/css/dashboard.css" />
-{{/contentFor}}
+<div class="container">
 
-<div class="dashboard">
-    <main class="main">
-        <header class="header">
-            <h1>Analytics & Reports</h1>
-        </header>
+  <main class="main-content">
+    <h1>Reports Overview</h1>
 
-        <section class="grid-container">
-            <div class="card wide">
-                <h3>Sales & Purchase Trends</h3>
-                <canvas id="salesChart" height="100"></canvas>
-            </div>
+    <div class="report-cards">
+        <div class="card">
+            <h3>Total Products</h3>
+            <p>{{totalProducts}}</p>
+        </div>
+        <div class="card">
+            <h3>Low Stock Items</h3>
+            <p>{{totalLowStock}}</p>
+        </div>
+    </div>
 
-            <div class="card">
-                <h3>Order Summary</h3>
-                <canvas id="orderChart" height="100"></canvas>
-            </div>
+    <section class="charts">
+        <h3>Current Stock Levels</h3>
+        <canvas id="stockChart"
+            data-labels='{{{json stockChart.labels}}}'
+            data-values='{{{json stockChart.values}}}'>
+        </canvas>
 
-            <div class="card">
-                <h3>Low Stock Items</h3>
-                <ul class="low-stock">
-                    {{#each lowStockItems}}
-                    <li>
-                        {{this.productName}} - {{this.quantity}} units
-                        <span class="low">Low</span>
-                    </li>
-                    {{/each}}
-                </ul>
-            </div>
-        </section>
-    </main>
+        <h3>Low Stock Distribution</h3>
+        <canvas id="lowStockChart"
+            data-labels='{{{json lowStockChart.labels}}}'
+            data-values='{{{json lowStockChart.values}}}'>
+        </canvas>
+    </section>
+
+  </main>
 </div>
 
-{{#contentFor "scripts"}}
 <script>
-    // Sales & Purchase Chart
-    const ctx1 = document.getElementById('salesChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [
-                { label: 'Purchase', data: [50000, 48000, 46000, 44000, 42000, 41000], backgroundColor: '#a5b4fc' },
-                { label: 'Sales', data: [52000, 50000, 47000, 45000, 43000, 42000], backgroundColor: '#6ee7b7' }
-            ]
-        }
-    });
+  document.addEventListener('DOMContentLoaded', () => {
+    function renderChart(canvasId, type, label, backgroundColor) {
+      const canvas = document.getElementById(canvasId)
+      if(!canvas){
+          return
+      }
 
-    // Order Summary Chart
-    const ctx2 = document.getElementById('orderChart').getContext('2d');
-    new Chart(ctx2, {
-        type: 'doughnut',
+      const ctx = canvas.getContext('2d')
+      const labels = JSON.parse(canvas.dataset.labels || '[]')
+      const values = JSON.parse(canvas.dataset.values || '[]')
+
+      new Chart(ctx, {
+        type: type,
         data: {
-            labels: ['Completed', 'Pending', 'Cancelled'],
-            datasets: [{
-                data: [65, 25, 10],
-                backgroundColor: ['#6ee7b7', '#a5b4fc', '#fca5a5']
-            }]
+          labels: labels,
+          datasets: [{
+            label: label,
+            data: values,
+            backgroundColor: backgroundColor
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
         }
-    });
+      })
+    }
+
+    renderChart('stockChart', 'bar', 'Stock Levels', '#60a5fa')
+    renderChart('lowStockChart', 'bar', 'Stock Distribution', ['#10b981', '#fbbf24', '#ef4444'])
+  })
 </script>
-{{/contentFor}}
