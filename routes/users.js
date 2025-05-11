@@ -57,7 +57,7 @@ router.get('/register', guestMiddleware, (req, res) => {
 });
 
 router.post('/register', guestMiddleware, async (req, res) => {
-    let { firstName, lastName, email, username, password } = req.body;
+    let { firstName, lastName, email, username, password, role } = req.body;
 
     // req validation
     try {
@@ -66,6 +66,11 @@ router.post('/register', guestMiddleware, async (req, res) => {
         email = helpers.validEmail(req.body.email).trim();
         username = helpers.validUsername(req.body.username).trim();
         password = helpers.validPassword(req.body.password).trim();
+
+        // Validate role
+        if (!role || (role !== 'user' && role !== 'admin')) {
+            throw new Error('Invalid role selected');
+        }
     } catch (e) {
         return res.status(404).render("error", {
             title: "Error | SWIS",
@@ -75,7 +80,7 @@ router.post('/register', guestMiddleware, async (req, res) => {
 
     // DB insert
     try {
-        const result = await registerUser(firstName, lastName, email, username, password);
+        const result = await registerUser(firstName, lastName, email, username, password, role);
 
         // Set session data
         req.session.user = {
