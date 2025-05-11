@@ -9,6 +9,7 @@ const router = Router();
 router.get("/inventory", authMiddleware, async (req, res) => {
     try {
         // Pagination params
+
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const search = req.query.search ? req.query.search.trim() : '';
@@ -19,8 +20,7 @@ router.get("/inventory", authMiddleware, async (req, res) => {
         if (search) {
             const regex = new RegExp(search, 'i');
             filteredProducts = allProducts.filter(p => regex.test(p.productName));
-        }
-
+        } 
         const totalProducts = filteredProducts.length;
         const totalPages = Math.ceil(totalProducts / limit);
         const startIndex = (page - 1) * limit;
@@ -48,6 +48,7 @@ router.get("/inventory", authMiddleware, async (req, res) => {
         res.render('inventory', {
             cssFile: 'inventory.css',
             title: 'Inventory | SWIS',
+            totalProducts: filteredProducts.length,
             products: productsWithStatus,
             categoryCount,
             lowStockCount,
@@ -55,7 +56,7 @@ router.get("/inventory", authMiddleware, async (req, res) => {
             totalInventoryValue: totalInventoryValue.toFixed(2),
             currentPage: page,
             totalPages,
-            search
+            search,
         });
     } catch (e) {
         return res.status(404).render("error", {
