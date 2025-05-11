@@ -1,0 +1,39 @@
+<div class="left-panel">
+    <div>
+        <img src="/images/swisLogo.png" alt="SWIS Logo" />
+        <h1>Smart Warehouse Inventory System</h1>
+    </div>
+</div>
+<div class="right-panel">
+    <div class="form-container">
+        <img src="/images/swisLogo.png" alt="SWIS Logo" />
+        <div class="error-message" style="display: {{#if error}}block{{else}}none{{/if}}">{{error}}</div>
+        <h2>Create an account</h2>
+        <form action="/register" method="POST">
+            <label for="firstName">First Name
+                <input id="firstName" name="firstName" type="text" placeholder="Enter your first name" required>
+            </label>
+            <label for="lastName">Last Name
+                <input id="lastName" name="lastName" type="text" placeholder="Enter your last name" required>
+            </label>
+            <label for="email">Email
+                <input id="email" name="email" type="email" placeholder="Enter your email" required>
+            </label>
+            <label for="username">Username
+                <input id="username" name="username" type="text" placeholder="Enter your username" required>
+            </label>
+            <label for="password">Password
+                <input id="password" name="password" type="password" placeholder="Create a password" required>
+            </label>
+            <label for="confirmPassword">Confirm Password
+                <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your password"
+                    required>
+            </label>
+            <button class="btn" type="submit">Get started</button>
+        </form>
+        <div class="signup">
+            Already have an account? <a href="/login">Log in</a>
+        </div>
+    </div>
+</div>
+<script src="/js/main.js"></script>

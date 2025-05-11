@@ -4,16 +4,15 @@
 
 body {
     margin: 0;
-    font-family: "Inter", sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     height: 100vh;
-    width: 100vw;
     background-color: #ffffff;
 }
 
 .app-container {
-    height: 100vh;
-    width: 100vw;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
@@ -56,7 +55,7 @@ body {
 }
 
 .form-container img {
-    width: 50%;
+    width: 150px;
     margin: 0 auto 1rem;
     display: block;
 }
@@ -65,28 +64,6 @@ h2 {
     text-align: center;
     margin-bottom: 0.5rem;
     color: #3a8dde;
-}
-
-p {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #666;
-}
-
-.form-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.form-row label {
-    min-width: 90px;
-    margin-right: 10px;
-    font-weight: 500;
-}
-
-.form-row input {
-    flex: 1;
 }
 
 input[type="text"],
@@ -112,7 +89,6 @@ input[type="password"] {
 }
 
 .signup {
-    color: #3a8dde;
     text-align: center;
     font-size: 0.9rem;
 }
@@ -120,6 +96,16 @@ input[type="password"] {
 .signup a {
     text-decoration: none;
     color: #3a8dde;
+}
+
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
 .card {
@@ -148,14 +134,4 @@ input[type="password"] {
 
 .alert {
     margin-bottom: 1rem;
-}
-
-.error-message {
-    background-color: #ffebee;
-    color: #c62828;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    text-align: center;
-    border: 1px solid #ef9a9a;
 }

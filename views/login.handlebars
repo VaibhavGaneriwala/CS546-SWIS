@@ -1,27 +1,32 @@
-<header>
-    <h1>Smart Warehouse Inventory System</h1>
-</header>
-
-<main>
-    <section>
-        <h2>Login</h2>
-
-        <form id="loginForm" action="/login" method="POST">
-            <div class="username-section">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+<div class="container">
+    <div class="left-panel">
+        <div>
+            <img src="/images/swisLogo.png" alt="SWIS Logo">
+            <h1>Smart Warehouse Inventory System</h1>
+        </div>
+    </div>
+    <div class="right-panel">
+        <div class="form-container">
+            <img src="/images/swisLogo.png" alt="SWIS Logo">
+            <div class="error-message" style="display: {{#if error}}block{{else}}none{{/if}}">{{error}}</div>
+            <h2>Log in to your account</h2>
+            <p>Welcome back! Please enter your details.</p>
+            <form action="/login" method="POST">
+                <div class="form-row">
+                    <label for="username">Username</label>
+                    <input id="username" name="username" type="text" placeholder="Enter your username" required
+                        value="{{username}}">
+                </div>
+                <div class="form-row">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Password" required value="">
+                </div>
+                <button class="btn" type="submit">Sign in</button>
+            </form>
+            <div class="signup">
+                Don't have an account? <a href="/register">Sign up</a>
             </div>
-            <div class="password-section">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div>
-                <button type="submit">Login</button>
-            </div>
-        </form>
-    </section>
-</main>
-
-<footer>
-    <p>&copy; 2025 Smart Warehouse Inventory System</p>
-</footer>
+        </div>
+    </div>
+</div>
+<script src="/js/main.js"></script>
