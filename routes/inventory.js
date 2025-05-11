@@ -72,14 +72,14 @@ router.get("/inventory/export", authMiddleware, async (req, res) => {
 
         // Create CSV content
         const headers = ['Product Name', 'Category', 'Quantity', 'Min Threshold', 'Unit Price', 'Stock Status', 'Next Restock Date'];
-        const rows = data.products.map(product => [
+        const rows = data.map(product => [
             product.productName,
             product.categoryName,
             product.quantity,
             product.minThreshold,
             product.unitPrice,
-            product.stockStatus,
-            product.restockSuggestion.nextRestockDate
+            product.stockStatus || '',
+            product.restockSuggestion?.nextRestockDate || ''
         ]);
 
         const csvContent = [
