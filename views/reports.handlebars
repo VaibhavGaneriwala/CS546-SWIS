@@ -1,18 +1,4 @@
-{{#contentFor "styles"}}
-<link rel="stylesheet" href="/css/reports.css" />
-{{/contentFor}}
-
 <div class="container">
-  <aside class="sidebar">
-    <h2 class="logo">SWIS</h2>
-    <nav>
-      <a href="/dashboard">Dashboard</a>
-      <a href="/inventory">Inventory</a>
-      <a class="active" href="/reports">Reports</a>
-      <a href="/settings">Settings</a>
-      <a href="/logout">Log Out</a>
-    </nav>
-  </aside>
 
   <main class="main-content">
     <h1>Reports Overview</h1>
@@ -21,10 +7,6 @@
         <div class="card">
             <h3>Total Products</h3>
             <p>{{totalProducts}}</p>
-        </div>
-        <div class="card">
-            <h3>Total Transactions</h3>
-            <p>{{totalTransactions}}</p>
         </div>
         <div class="card">
             <h3>Low Stock Items</h3>
@@ -44,17 +26,43 @@
             data-labels='{{{json lowStockChart.labels}}}'
             data-values='{{{json lowStockChart.values}}}'>
         </canvas>
-
-        <h3>Top Selling Products</h3>
-        <canvas id="topSellingChart"
-            data-labels='{{{json topSellingChart.labels}}}'
-            data-values='{{{json topSellingChart.values}}}'>
-        </canvas>
     </section>
 
   </main>
 </div>
 
-{{#contentFor "scripts"}}
-  <script src="/js/reports.js"></script>
-{{/contentFor}}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    function renderChart(canvasId, type, label, backgroundColor) {
+      const canvas = document.getElementById(canvasId)
+      if(!canvas){
+          return
+      }
+
+      const ctx = canvas.getContext('2d')
+      const labels = JSON.parse(canvas.dataset.labels || '[]')
+      const values = JSON.parse(canvas.dataset.values || '[]')
+
+      new Chart(ctx, {
+        type: type,
+        data: {
+          labels: labels,
+          datasets: [{
+            label: label,
+            data: values,
+            backgroundColor: backgroundColor
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      })
+    }
+
+    renderChart('stockChart', 'bar', 'Stock Levels', '#60a5fa')
+    renderChart('lowStockChart', 'bar', 'Stock Distribution', ['#10b981', '#fbbf24', '#ef4444'])
+  })
+</script>

@@ -13,9 +13,7 @@ const getCollectionFn = (collection) => {
 
 const users = getCollectionFn('users');
 const inventory = getCollectionFn('inventory');
-const transactions = getCollectionFn('transactions');
 const auditLogs = getCollectionFn('auditLogs');
 const notifications = getCollectionFn('notifications');
-const restockSuggestions = getCollectionFn('restockSuggestions');
 
-export { users, inventory, transactions, auditLogs, notifications, restockSuggestions };
+export { users, inventory, auditLogs, notifications };

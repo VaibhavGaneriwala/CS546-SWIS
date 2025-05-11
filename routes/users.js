@@ -1,16 +1,16 @@
 import express from 'express';
 import { registerUser, loginUser } from '../data/userController.js';
-import { redirectIfAuthenticated, requireAuth } from '../src/middlewares/auth.js';
+import { guestMiddleware } from '../middlewares/auth.js';
 import *  as helpers from "../utils/validations.js";
 
 const router = express.Router();
 
 // Auth routes
-router.get('/login', redirectIfAuthenticated, (req, res) => {
-    res.render('login', { title: 'Login | SWIS' });
+router.get('/login', guestMiddleware, (req, res) => {
+    res.render('login', { cssFile: 'login.css', title: 'Login | SWIS' });
 });
 
-router.post('/login', redirectIfAuthenticated, async (req, res) => {
+router.post('/login', guestMiddleware, async (req, res) => {
     let { username, password } = req.body;
 
     // req validation
@@ -18,9 +18,12 @@ router.post('/login', redirectIfAuthenticated, async (req, res) => {
         username = helpers.validUsername(req.body.username).trim();
         password = helpers.validPassword(req.body.password).trim();
     } catch (e) {
-        return res.status(404).render("error", {
-            title: "Error | SWIS",
-            error: e.message
+        // show error on login page, retain username
+        return res.status(400).render('login', {
+            cssFile: 'login.css',
+            title: 'Login | SWIS',
+            error: e.message,
+            username: req.body.username || ''
         });
     }
 
@@ -39,18 +42,21 @@ router.post('/login', redirectIfAuthenticated, async (req, res) => {
 
         return res.redirect('/dashboard');
     } catch (e) {
-        return res.status(e.status || 500).render("error", {
-            title: "Error | SWIS",
-            error: e.message
+        // show error on login page, retain username
+        return res.status(401).render('login', {
+            cssFile: 'login.css',
+            title: 'Login | SWIS',
+            error: 'Invalid username or password',
+            username: req.body.username || ''
         });
     }
 });
 
-router.get('/register', redirectIfAuthenticated, (req, res) => {
-    res.render('register', { title: 'Register | SWIS' });
+router.get('/register', guestMiddleware, (req, res) => {
+    res.render('register', { cssFile: 'register.css', title: 'Register | SWIS' });
 });
 
-router.post('/register', redirectIfAuthenticated, async (req, res) => {
+router.post('/register', guestMiddleware, async (req, res) => {
     let { firstName, lastName, email, username, password } = req.body;
 
     // req validation
@@ -94,15 +100,5 @@ router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/login');
 });
-
-
-// Protected routes
-// router.get('/dashboard', requireAuth, (req, res) => {
-//     res.render('dashboard', {
-//         title: 'Dashboard | SWIS',
-//         // user: req.session.user
-//     });
-// });
-
 
 export default router;

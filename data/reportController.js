@@ -1,15 +1,14 @@
-import { inventory, transactions } from '../config/mongoCollections.js'
+import { inventory } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb'
 
 export async function getReportData(){
     const inventoryCol = await inventory()
-    const transactionsCol = await transactions()
+    //const transactionsCol = await transactions()
 
     const allProducts = await inventoryCol.find({}).toArray()
-    const allTransactions = await transactionsCol.find({}).toArray()
+    //const allTransactions = await transactionsCol.find({}).toArray()
 
     const totalProducts = allProducts.length
-    const totalTransactions = allTransactions.length
 
     const stockChart = {
         labels: allProducts.map(p => p.productName),
@@ -25,6 +24,7 @@ export async function getReportData(){
         ]
     }
 
+    /*
     const restockTransactions = allTransactions.filter(t => t.actionName === 'restock')
     const restockMap = restockTransactions.reduce((acc, t) => {
         acc[t.productId] = (acc[t.productId] || 0) + t.quantityChanged
@@ -55,10 +55,17 @@ export async function getReportData(){
 
     return {
         totalProducts,
-        totalTransactions,
         totalLowStock: lowStockChart.values[1],
         stockChart,
         lowStockChart,
         topSellingChart
+    }
+    */
+
+    return {
+        totalProducts,
+        totalLowStock: lowStockChart.values[1],
+        stockChart,
+        lowStockChart
     }
 }

@@ -1,135 +1,28 @@
-{{#contentFor "styles"}}
-<link rel="stylesheet" href="/css/dashboard.css" />
-{{/contentFor}}
-
 <div class="dashboard">
-  <aside class="sidebar">
-    <div class="logo">
-      <img src="/images/swisLogo.png" alt="SWIS Logo">
-      <h2>Dashboard</h2>
-    </div>
-    <nav class="menu">
-      <a href="/dashboard" class="active">Dashboard</a>
-      <a href="/inventory">Inventory</a>
-      <a href="/reports">Reports</a>
-      <a href="/settings">Settings</a>
-      <a href="/logout">Log Out</a>
-    </nav>
-  </aside>
-  <main class="main">
-    <header class="header">
-      <input type="text" placeholder="Search product, supplier, order" />
-    </header>
+    <main class="main">
+        <section class="grid-container">
 
-    <section class="grid-container">
-      <div class="card">
-        <h3>Sales Overview</h3>
-        <div class="stats-row">
-          <div><strong>$ {{dummySales}}</strong><br>Sales</div>
-          <div><strong>$ {{dummyRevenue}}</strong><br>Revenue</div>
-          <div><strong>$ {{dummyProfit}}</strong><br>Profit</div>
-          <div><strong>$ {{dummyCost}}</strong><br>Cost</div>
-        </div>
-      </div>
+            <div class="card">
+                <h3>Price Overview</h3>
+                <div class="stats-row">
+                    <div><strong>$ {{totalPrice}}</strong><br>Total Price</div>
+                </div>
+            </div>
 
-      <div class="card">
-        <h3>Inventory Summary</h3>
-        <div class="stats-row">
-          <div><strong>{{totalQuantity}}</strong><br>Quantity in Hand</div>
-        </div>
-      </div>
+            <div class="card">
+                <h3>Inventory Summary</h3>
+                <div class="stats-row">
+                    <div>Number of Products<br><strong>{{productCount}}</strong></div>
+                    <div><strong>{{totalQuantity}}</strong><br>Quantity in Hand</div>
+                </div>
+            </div>
 
-      <div class="card">
-        <h3>Purchase Overview</h3>
-        <div class="stats-row">
-          <div><strong>82</strong><br>Purchase</div>
-          <div><strong>$ 13,573</strong><br>Cost</div>
-          <div><strong>5</strong><br>Cancel</div>
-          <div><strong>$ 17,432</strong><br>Return</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Product Summary</h3>
-        <div class="stats-row">
-          <div><strong>{{supplierCount}}</strong><br>Number of Suppliers</div>
-          <div><strong>{{categoryCount}}</strong><br>Number of Categories</div>
-        </div>
-      </div>
-
-      <div class="card wide">
-        <h3>Sales & Purchase</h3>
-        <canvas id="salesChart" height="100"></canvas>
-      </div>
-
-      <div class="card">
-        <h3>Order Summary</h3>
-        <canvas id="orderChart" height="100"></canvas>
-      </div>
-
-      <div class="card">
-        <h3>Top Selling Stock <a href="#">See All</a></h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Sold</th>
-              <th>Remaining</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each topSellingProducts}}
-              <tr>
-                <td>{{this.name}}</td>
-                <td>{{this.sold}}</td>
-                <td>{{this.remaining}}</td>
-                <td>$ {{this.price}}</td>
-              </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card">
-        <h3>Low Quantity Stock <a href="#">See All</a></h3>
-        <ul class="low-stock">
-          {{#each lowStockItems}}
-            <li>
-              {{this.productName}} - {{this.quantity}} units
-              <span class="low">Low</span>
-            </li>
-          {{/each}}
-        </ul>
-      </div>
-    </section>
-  </main>
+            <div class="card">
+                <h3>Product Summary</h3>
+                <div class="stats-row">
+                    <div>Number of Categories<br><strong>{{categoryCount}}</strong></div>
+                </div>
+            </div>
+        </section>
+    </main>
 </div>
-
-{{#contentFor "scripts"}}
-<script>
-  const ctx1 = document.getElementById('salesChart').getContext('2d');
-  new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [
-        { label: 'Purchase', data: [50000, 48000, 46000, 44000, 42000, 41000], backgroundColor: '#a5b4fc' },
-        { label: 'Sales', data: [52000, 50000, 47000, 45000, 43000, 42000], backgroundColor: '#6ee7b7' }
-      ]
-    }
-  });
-
-  const ctx2 = document.getElementById('orderChart').getContext('2d');
-  new Chart(ctx2, {
-    type: 'line',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-      datasets: [
-        { label: 'Ordered', data: [3000, 2500, 2700, 2900, 3100], borderColor: '#60a5fa' },
-        { label: 'Delivered', data: [2800, 2300, 2600, 2800, 3000], borderColor: '#34d399' }
-      ]
-    }
-  });
-</script>
-{{/contentFor}}
