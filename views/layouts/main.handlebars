@@ -18,12 +18,20 @@
                 <img src="/images/swisLogo.png" alt="SWIS Logo" style="max-width: 60px; margin-bottom: 8px;">
             </div>
             <nav class="menu">
-                <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
-                <a href="/inventory" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
-                <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
-                <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
-                <a href="/logs" class="{{#if (eq currentPath '/logs')}}active{{/if}}">Logs</a>
-                <a href="/logout">Log Out</a>
+                {{#if (eq user.roleName 'admin')}}
+                    <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
+                    <a href="/inventory/admin" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
+                    <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
+                    <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
+                    <a href="/logs" class="{{#if (eq currentPath '/logs')}}active{{/if}}">Logs</a>
+                    <a href="/logout">Log Out</a>
+                {{else}}
+                    <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
+                    <a href="/inventory/user" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
+                    <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
+                    <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
+                    <a href="/logout">Log Out</a>
+                {{/if}}
             </nav>
         </aside>
         {{/if}}

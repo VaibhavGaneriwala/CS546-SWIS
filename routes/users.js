@@ -35,7 +35,7 @@ router.post('/login', guestMiddleware, async (req, res) => {
         req.session.user = {
             _id: result.user._id,
             username: result.user.username,
-            role: result.user.role,
+            roleName: result.user.roleName,
             firstName: result.user.firstName,
             lastName: result.user.lastName
         };
@@ -81,7 +81,7 @@ router.post('/register', guestMiddleware, async (req, res) => {
         req.session.user = {
             _id: result.user._id,
             username: result.user.username,
-            role: result.user.role,
+            roleName: result.user.roleName,
             firstName: result.user.firstName,
             lastName: result.user.lastName
         };

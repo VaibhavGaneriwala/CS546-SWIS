@@ -1,6 +1,7 @@
 import { inventory } from '../config/mongoCollections.js';
 import * as helpers from "../utils/validations.js";
 import { addAuditLog } from './auditController.js';
+import { ObjectId } from 'mongodb';
 
 export {addProduct, updateProduct, removeProduct, getProductByName, getAllProducts};
 
@@ -37,6 +38,7 @@ async function addProduct(productName, categoryName, quantity, minThreshold, uni
     return true;
 }
 
+//probably needs to be changed to find using id
 async function updateProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, userId, name) {
 
     if (!productName || !categoryName || !quantity || !minThreshold || !unitPrice || !restockSuggestion) throw { status: 400, message: "You must supply all fields!" };
@@ -60,32 +62,37 @@ async function updateProduct(productName, categoryName, quantity, minThreshold, 
 
     if (!updateInfo.acknowledged || updateInfo.modifiedCount === 0) throw new Error("Could not update product");
 
+    // Log the update action
     await addAuditLog(userId, name, 'updateProduct', {
         before: existingProduct,
-        after: updatedProduct
+        after: updateData
     })
 
     return true;
 }
 
-async function removeProduct(productName, userId, name) {
-    if (!productName) throw { status: 400, message: "You must give Product Name!" };
-    productName = helpers.validProductName(productName);
+async function removeProduct(productId, userId, name) {
+    const inventoryCollection = await inventory()
 
-    const inventoryCollection = await inventory();
+    const id = new ObjectId(productId)
+    const existingProduct = await inventoryCollection.findOne({ _id: id })
 
-    // check if product exists
-    const existingProduct = await inventoryCollection.findOne({ productName });
-    if (!existingProduct) throw new Error("Product not found");
+    if(!existingProduct){
+        throw("Product not found")
+    } 
 
-    const deleteInfo = await inventoryCollection.deleteOne({ productName });
-    if (!deleteInfo.acknowledged || deleteInfo.deletedCount === 0) throw new Error("Could not remove product");
+    const deleteInfo = await inventoryCollection.deleteOne({ _id: id })
+    if (!deleteInfo.acknowledged || deleteInfo.deletedCount === 0) {
+        throw("Could not remove product")
+    }
 
-    await addAuditLog(userId, name, 'removeProduct', {
-        deleted: existingProduct
+    await addAuditLog(userId, name, 'deleteProduct', {
+        productName: existingProduct.productName,
+        categoryName: existingProduct.categoryName,
+        quantity: existingProduct.quantity
     })
-    
-    return true;
+
+    return true
 }
 
 async function getProductByName(productName) {

@@ -26,7 +26,7 @@ const registerUser = async (firstName, lastName, email, username, password) => {
         const insertResult = await usersCol.insertOne(newUser);
         if (!insertResult.acknowledged || !insertResult.insertedId) throw { status: 500, message: "Could not add user" };
 
-        return { status: 200, user: { _id: insertResult.insertedId, username: validatedUsername, role: 'user', firstName: validatedFirstName, lastName: validatedLastName } };
+        return { status: 200, user: { _id: insertResult.insertedId, username: validatedUsername, roleName: 'user', firstName: validatedFirstName, lastName: validatedLastName } };
     } catch (e) {
         throw { status: 500, message: e.message };
     }
@@ -49,7 +49,7 @@ const loginUser = async (username, password) => {
         const updateResult = await usersCol.updateOne({ _id: user._id },{ $set: { lastLogin: helpers.createCurrentDateandTime()}});
         if (!updateResult.acknowledged || updateResult.modifiedCount === 0) throw {status: 500, message: "Could not update last login time" };
 
-        return {status: 200, user: {_id: user._id, username: user.username, role: user.role, firstName: user.firstName, lastName: user.lastName}};
+        return {status: 200, user: {_id: user._id, username: user.username, roleName: user.roleName, firstName: user.firstName, lastName: user.lastName}};
     } catch (e) {
         throw { status, message: e.message };
     }

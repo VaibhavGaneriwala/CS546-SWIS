@@ -40,7 +40,6 @@
             <div class="product-header">
                 <h2>Products</h2>
                 <div class="buttons">
-                    <button class="add" onclick="openAddProductModal()">Add Product</button>
                     <button class="download" onclick="downloadCSV()">Download all</button>
                 </div>
             </div>
@@ -82,59 +81,13 @@
             </table>
             <div class="pagination">
                 <button {{#if (eq currentPage 1)}}disabled{{/if}}
-                    onclick="window.location.href='/inventory?page={{subtract currentPage 1}}'">Previous</button>
+                    onclick="window.location.href='/inventory/user?page={{subtract currentPage 1}}'">Previous</button>
                 <span>Page {{currentPage}} of {{totalPages}}</span>
                 <button {{#if (eq currentPage totalPages)}}disabled{{/if}}
-                    onclick="window.location.href='/inventory?page={{add currentPage 1}}'">Next</button>
+                    onclick="window.location.href='/inventory/user?page={{add currentPage 1}}'">Next</button>
             </div>
         </section>
     </main>
-</div>
-
-<!-- Add Product Modal -->
-<div id="addProductModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeAddProductModal()">&times;</span>
-        <h2>Add New Product</h2>
-        <form id="addProductForm" onsubmit="handleAddProduct(event)">
-            <div class="form-group">
-                <label for="productName">Product Name</label>
-                <input type="text" id="productName" name="productName" required>
-                <div class="error-message" id="productNameError"></div>
-            </div>
-            <div class="form-group">
-                <label for="categoryName">Category</label>
-                <input type="text" id="categoryName" name="categoryName" required>
-                <div class="error-message" id="categoryNameError"></div>
-            </div>
-            <div class="form-group">
-                <label for="quantity">Quantity</label>
-                <input type="number" id="quantity" name="quantity" min="0" required>
-                <div class="error-message" id="quantityError"></div>
-            </div>
-            <div class="form-group">
-                <label for="minThreshold">Minimum Threshold</label>
-                <input type="number" id="minThreshold" name="minThreshold" min="0" required>
-                <div class="error-message" id="minThresholdError"></div>
-            </div>
-            <div class="form-group">
-                <label for="unitPrice">Unit Price ($)</label>
-                <input type="number" id="unitPrice" name="unitPrice" min="0" step="0.01" required>
-                <div class="error-message" id="unitPriceError"></div>
-            </div>
-            <div class="form-group">
-                <label for="nextRestockDate">Next Restock Date</label>
-                <input type="date" id="nextRestockDate" name="nextRestockDate" required>
-                <div class="error-message" id="nextRestockDateError"></div>
-            </div>
-            <div class="form-group">
-                <label for="recommendedQty">Recommended Restock Quantity</label>
-                <input type="number" id="recommendedQty" name="recommendedQty" min="0" required>
-                <div class="error-message" id="recommendedQtyError"></div>
-            </div>
-            <button type="submit" class="submit-btn">Add Product</button>
-        </form>
-    </div>
 </div>
 
 <script>
