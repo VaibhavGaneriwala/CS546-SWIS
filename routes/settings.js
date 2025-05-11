@@ -2,7 +2,6 @@
 import express from 'express'
 import { users } from '../config/mongoCollections.js'
 import { authMiddleware } from '../middlewares/auth.js'
-import { addAuditLog } from '../data/logController.js'
 import { ObjectId } from 'mongodb'
 
 const router = express.Router()
