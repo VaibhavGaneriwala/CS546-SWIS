@@ -10,107 +10,59 @@ const inventory = db.collection('inventory')
 const users = db.collection('users')
 await inventory.deleteMany({})
 await users.deleteMany({})
-const hashedPassword = await bcrypt.hash('Password@1', SALT_ROUNDS)
 
-const testUser = {
-  firstName: 'Bat',
-  lastName: 'Man',
-  email: 'batman@gmail.com',
-  username: 'lego',
-  password: hashedPassword,
-  roleName: 'admin',
-  createdAt: new Date()
+// Create users
+const userInfos = [
+    { firstName: 'Bat', lastName: 'Man', email: 'batman@gmail.com', username: 'lego', password: 'Password@1', roleName: 'admin' },
+    { firstName: 'Clark', lastName: 'Kent', email: 'superman@gmail.com', username: 'superman', password: 'Superman@1', roleName: 'user' },
+    { firstName: 'Diana', lastName: 'Prince', email: 'wonderwoman@gmail.com', username: 'wonderwoman', password: 'Wonder@1', roleName: 'user' },
+    { firstName: 'Barry', lastName: 'Allen', email: 'flash@gmail.com', username: 'flash', password: 'Flash@1', roleName: 'user' },
+    { firstName: 'Selina', lastName: 'Kyle', email: 'catwoman@gmail.com', username: 'catwoman', password: 'Cat@1', roleName: 'user' },
+    { firstName: 'Victor', lastName: 'Stone', email: 'cyborg@gmail.com', username: 'cyborg', password: 'Cyborg@1', roleName: 'user' },
+]
+
+const userDocs = await Promise.all(userInfos.map(async (u) => ({
+    ...u,
+    password: await bcrypt.hash(u.password, SALT_ROUNDS),
+    createdAt: new Date()
+})))
+const userInsertResult = await users.insertMany(userDocs)
+const userIds = Object.values(userInsertResult.insertedIds)
+
+// Generate 50+ inventory items
+const categories = ['electronics', 'supplies', 'hardware', 'office', 'furniture', 'tools', 'software']
+const productNames = [
+    'Bluetooth Scanner', 'Thermal Printer', 'Barcode Labels', 'Thermal Ribbon', 'Laptop', 'Desktop PC', 'Monitor', 'Keyboard', 'Mouse', 'USB Drive',
+    'External HDD', 'Router', 'Switch', 'Ethernet Cable', 'Label Maker', 'Packing Tape', 'Box Cutter', 'Safety Gloves', 'Pallet Jack', 'Hand Truck',
+    'Clipboard', 'Whiteboard', 'Desk Chair', 'Filing Cabinet', 'Printer Paper', 'Ink Cartridge', 'Stapler', 'Paper Clips', 'Rubber Bands', 'Notepad',
+    'Calculator', 'Projector', 'Extension Cord', 'Power Strip', 'Surge Protector', 'Toolbox', 'Hammer', 'Screwdriver Set', 'Wrench Set', 'Drill',
+    'Measuring Tape', 'Flashlight', 'Batteries', 'First Aid Kit', 'Fire Extinguisher', 'Safety Glasses', 'Ear Protection', 'Work Boots', 'Hi-Vis Vest', 'Software License'
+]
+
+const items = []
+for (let i = 0; i < 50; i++) {
+    const category = categories[i % categories.length]
+    const productName = productNames[i % productNames.length] + (i > productNames.length ? ` ${i}` : '')
+    const quantity = Math.floor(Math.random() * 50)
+    const minThreshold = Math.floor(Math.random() * 10) + 1
+    const unitPrice = +(Math.random() * 500 + 5).toFixed(2)
+    const recommendedQty = Math.floor(Math.random() * 100) + 10
+    const nextRestockDate = `2025-06-${String(Math.floor(Math.random() * 20) + 10).padStart(2, '0')}`
+    items.push({
+        _id: new ObjectId(),
+        productName,
+        categoryName: category,
+        quantity,
+        minThreshold,
+        unitPrice,
+        restockSuggestion: {
+            recommendedQty,
+            nextRestockDate
+        },
+        lastUpdated: new Date()
+    })
 }
 
-const { insertedId: userId } = await users.insertOne(testUser)
-
-const id1 = new ObjectId();
-const id2 = new ObjectId();
-const id3 = new ObjectId();
-const id4 = new ObjectId();
-
-const items = [
-  {
-    _id: id1,
-    productName: 'Bluetooth Scanner',
-    categoryName: 'electronics',
-    quantity: 5,
-    minThreshold: 10,
-    unitPrice: 59.99,
-    restockSuggestion: {
-      recommendedQty: 20,
-      nextRestockDate: '2025-06-15'
-    },
-    lastUpdated: new Date()
-  },
-  {
-    _id: id2,
-    productName: 'Thermal Printer',
-    categoryName: 'electronics',
-    quantity: 15,
-    minThreshold: 10,
-    unitPrice: 120.00,
-    restockSuggestion: {
-      recommendedQty: 30,
-      nextRestockDate: '2025-06-10'
-    },
-    lastUpdated: new Date()
-  },
-  {
-    _id: id3,
-    productName: 'Barcode Labels',
-    categoryName: 'supplies',
-    quantity: 3,
-    minThreshold: 8,
-    unitPrice: 12.99,
-    restockSuggestion: {
-      recommendedQty: 50,
-      nextRestockDate: '2025-06-12'
-    },
-    lastUpdated: new Date()
-  },
-  {
-    _id: id4,
-    productName: 'Thermal Ribbon',
-    categoryName: 'supplies',
-    quantity: 0,
-    minThreshold: 5,
-    unitPrice: 7.49,
-    restockSuggestion: {
-      recommendedQty: 100,
-      nextRestockDate: '2025-06-20'
-    },
-    lastUpdated: new Date()
-  }
-]
-
-const insertItems = await inventory.insertMany(items)
-
-const transactionDocs = [
-  {
-    productId: id1,
-    userId,
-    actionId: new ObjectId(),
-    actionName: 'purchase',
-    quantityChanged: 12,
-    logTimestamp: new Date()
-  },
-  {
-    productId: id2,
-    userId,
-    actionId: new ObjectId(),
-    actionName: 'purchase',
-    quantityChanged: 9,
-    logTimestamp: new Date()
-  },
-  {
-    productId: id1,
-    userId,
-    actionId: new ObjectId(),
-    actionName: 'purchase',
-    quantityChanged: 4,
-    logTimestamp: new Date()
-  }
-]
+await inventory.insertMany(items)
 
 process.exit(0)

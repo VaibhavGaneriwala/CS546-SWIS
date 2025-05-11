@@ -1,7 +1,13 @@
 <div class="container">
     <main class="main-content">
         <header class="top-bar">
-            <input type="text" placeholder="Search product">
+            <form method="GET" action="/inventory" style="width: 60%; display: flex; gap: 8px; align-items: center;">
+                <input type="text" name="search" placeholder="Search product" value="{{search}}" style="width: 100%;" />
+                {{#if search}}
+                <a href="/inventory"
+                    style="padding: 8px 14px; background: #eee; border-radius: 6px; color: #333; text-decoration: none; font-size: 15px; border: 1px solid #ddd;">Clear</a>
+                {{/if}}
+            </form>
             <div class="profile"></div>
         </header>
 
@@ -40,6 +46,7 @@
                 <thead>
                     <tr>
                         <th>Products</th>
+                        <th>Category</th>
                         <th>Buying Price</th>
                         <th>Quantity</th>
                         <th>Threshold Value</th>
@@ -52,6 +59,7 @@
                     {{#each products}}
                     <tr>
                         <td>{{productName}}</td>
+                        <td>{{categoryName}}</td>
                         <td>${{unitPrice}}</td>
                         <td>{{quantity}} units</td>
                         <td>{{minThreshold}} units</td>
@@ -71,9 +79,11 @@
                 </tbody>
             </table>
             <div class="pagination">
-                <button>Previous</button>
-                <span>Page 1 of 10</span>
-                <button>Next</button>
+                <button {{#if (eq currentPage 1)}}disabled{{/if}}
+                    onclick="window.location.href='/inventory?page={{subtract currentPage 1}}'">Previous</button>
+                <span>Page {{currentPage}} of {{totalPages}}</span>
+                <button {{#if (eq currentPage totalPages)}}disabled{{/if}}
+                    onclick="window.location.href='/inventory?page={{add currentPage 1}}'">Next</button>
             </div>
         </section>
     </main>

@@ -8,34 +8,54 @@ const router = Router();
 // Render inventory page
 router.get("/inventory", authMiddleware, async (req, res) => {
     try {
-        const products = await getAllProducts();
-        const categoryCount = new Set(products.map(p => p.categoryName?.toLowerCase())).size;
-        const lowStockCount = products.filter(p => p.quantity <= p.minThreshold).length;
-        const noStockCount = products.filter(p => p.quantity === 0).length;
-        
+        // Pagination params
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search ? req.query.search.trim() : '';
+        const allProducts = await getAllProducts();
+
+        // Filter by search term (case-insensitive, partial match)
+        let filteredProducts = allProducts;
+        if (search) {
+            const regex = new RegExp(search, 'i');
+            filteredProducts = allProducts.filter(p => regex.test(p.productName));
+        }
+
+        const totalProducts = filteredProducts.length;
+        const totalPages = Math.ceil(totalProducts / limit);
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+        const categoryCount = new Set(filteredProducts.map(p => p.categoryName?.toLowerCase())).size;
+        const lowStockCount = filteredProducts.filter(p => p.quantity <= p.minThreshold).length;
+        const noStockCount = filteredProducts.filter(p => p.quantity === 0).length;
+
         // Calculate total inventory value
-        const totalInventoryValue = products.reduce((total, product) => {
+        const totalInventoryValue = filteredProducts.reduce((total, product) => {
             const productValue = product.quantity * product.unitPrice;
             return total + productValue;
         }, 0);
-        
+
         // Add stock status and formatted price to each product
-        const productsWithStatus = products.map(product => ({
+        const productsWithStatus = paginatedProducts.map(product => ({
             ...product,
-            stockStatus: product.quantity === 0 ? 'out-stock' : 
-                        product.quantity <= product.minThreshold ? 'low-stock' : 'in-stock',
+            stockStatus: product.quantity === 0 ? 'out-stock' :
+                product.quantity <= product.minThreshold ? 'low-stock' : 'in-stock',
             formattedPrice: (product.quantity * product.unitPrice).toFixed(2)
         }));
-        
+
         res.render('inventory', {
+            cssFile: 'inventory.css',
             title: 'Inventory | SWIS',
             products: productsWithStatus,
             categoryCount,
             lowStockCount,
             noStockCount,
-            dummyRevenue: 18300,
-            dummyCost: 17432,
-            totalInventoryValue: totalInventoryValue.toFixed(2)
+            totalInventoryValue: totalInventoryValue.toFixed(2),
+            currentPage: page,
+            totalPages,
+            search
         });
     } catch (e) {
         return res.status(404).render("error", {
@@ -49,7 +69,7 @@ router.get("/inventory", authMiddleware, async (req, res) => {
 router.get("/inventory/export", authMiddleware, async (req, res) => {
     try {
         const data = await getAllProducts();
-        
+
         // Create CSV content
         const headers = ['Product Name', 'Category', 'Quantity', 'Min Threshold', 'Unit Price', 'Stock Status', 'Next Restock Date'];
         const rows = data.products.map(product => [
@@ -61,7 +81,7 @@ router.get("/inventory/export", authMiddleware, async (req, res) => {
             product.stockStatus,
             product.restockSuggestion.nextRestockDate
         ]);
-        
+
         const csvContent = [
             headers.join(','),
             ...rows.map(row => row.join(','))
@@ -70,7 +90,7 @@ router.get("/inventory/export", authMiddleware, async (req, res) => {
         // Set headers for CSV download
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename=inventory.csv');
-        
+
         res.send(csvContent);
     } catch (e) {
         return res.status(404).render("error", {

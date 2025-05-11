@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Auth routes
 router.get('/login', guestMiddleware, (req, res) => {
-    res.render('login', { title: 'Login | SWIS' });
+    res.render('login', { cssFile: 'login.css', title: 'Login | SWIS' });
 });
 
 router.post('/login', guestMiddleware, async (req, res) => {
@@ -18,9 +18,12 @@ router.post('/login', guestMiddleware, async (req, res) => {
         username = helpers.validUsername(req.body.username).trim();
         password = helpers.validPassword(req.body.password).trim();
     } catch (e) {
-        return res.status(404).render("error", {
-            title: "Error | SWIS",
-            error: e.message
+        // show error on login page, retain username
+        return res.status(400).render('login', {
+            cssFile: 'login.css',
+            title: 'Login | SWIS',
+            error: e.message,
+            username: req.body.username || ''
         });
     }
 
@@ -39,15 +42,18 @@ router.post('/login', guestMiddleware, async (req, res) => {
 
         return res.redirect('/dashboard');
     } catch (e) {
-        return res.status(e.status || 500).render("error", {
-            title: "Error | SWIS",
-            error: e.message
+        // show error on login page, retain username
+        return res.status(401).render('login', {
+            cssFile: 'login.css',
+            title: 'Login | SWIS',
+            error: 'Invalid username or password',
+            username: req.body.username || ''
         });
     }
 });
 
 router.get('/register', guestMiddleware, (req, res) => {
-    res.render('register', { title: 'Register | SWIS' });
+    res.render('register', { cssFile: 'register.css', title: 'Register | SWIS' });
 });
 
 router.post('/register', guestMiddleware, async (req, res) => {
