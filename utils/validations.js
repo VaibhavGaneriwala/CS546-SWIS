@@ -63,7 +63,7 @@ function validCategoryName(name) {
 }
 
 function validQuantity(quantity) {
-    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 1) throw new Error("Quantity must be an integer greater than or equal to 1");
+    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 0) throw new Error("Quantity must be an integer greater than or equal to 1");
     return quantity;
 }
 

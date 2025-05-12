@@ -1,11 +1,21 @@
 import { Router } from 'express';
-import { addProduct, updateProduct, removeProduct, getProductByName, getAllProducts } from "../data/inventoryController.js";
+import { addProduct, updateProduct, removeProduct, getProductByName, getAllProducts, getProductById, updateProductQuantity } from "../data/inventoryController.js";
 import { adminOnly, authMiddleware, inventoryRedirectMiddleware } from '../middlewares/auth.js';
 import * as helpers from "../utils/validations.js";
 
 const router = Router();
 
 router.get("/inventory", authMiddleware, inventoryRedirectMiddleware)
+
+function computeStockStatus(quantity, minThreshold) {
+    if(quantity === 0){
+        return 'out-stock'
+    }else if(quantity <= minThreshold){
+        return 'low-stock'
+    }else{
+        return 'in-stock'
+    }
+}
 
 router.get("/inventory/admin", authMiddleware, adminOnly, async (req, res) => {
     try {
@@ -46,7 +56,7 @@ router.get("/inventory/admin", authMiddleware, adminOnly, async (req, res) => {
             formattedPrice: (product.quantity * product.unitPrice).toFixed(2)
         }));
 
-        const today = new Date().toISOString().split("T")[0];
+        const today = new Date().toISOString().split("T")[0]
 
         res.render('inventory-admin', {
             cssFile: 'inventory.css',
@@ -220,7 +230,22 @@ router.post("/inventory", authMiddleware, adminOnly, async (req, res) => {
         
         if (!result) throw new Error("Failed to add product");
 
-        res.status(200).json({ message: "Product added successfully" });
+        res.status(200).json({ 
+            message: "Product added successfully",
+            _id: result.insertedId,
+            productName: trimmedProductName,
+            categoryName: trimmedCategoryName,
+            quantity,
+            minThreshold,
+            unitPrice,
+            restockSuggestion: {
+                nextRestockDate: trimmedNextRestockDate,
+                recommendedQty: restockSuggestion.recommendedQty
+            },
+            _id: result.insertedId || "temp-id",
+            stockStatus: computeStockStatus(quantity, minThreshold),
+            formattedPrice: (unitPrice * quantity).toFixed(2) 
+        });
     } catch (e) {
         res.status(400).json({ message: e.message });
     }
@@ -238,14 +263,83 @@ router.delete("/inventory/:id", authMiddleware, adminOnly, async (req, res) => {
 
 router.put("/inventory/:id", authMiddleware, adminOnly, async (req, res) => {
   try{
-    const fullName = `${req.session.user.firstName} ${req.session.user.lastName}`
-    const { productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion } = req.body
+        const fullName = `${req.session.user.firstName} ${req.session.user.lastName}`
+        let { productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion } = req.body
 
-    const result = await updateProduct(req.params.id, productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, req.session.user._id, fullName)
-    res.status(200).json({ message: "Product updated successfully" })
+        // Validate
+        productName = helpers.validProductName(productName)
+        categoryName = helpers.validCategoryName(categoryName)
+        quantity = helpers.validQuantity(quantity)
+        minThreshold = helpers.validMinThreshold(minThreshold)
+        unitPrice = helpers.validUnitPrice(unitPrice)
+        restockSuggestion = helpers.validRestockSuggestion(restockSuggestion)
+
+        const updatedProduct = {
+            productName,
+            categoryName,
+            quantity,
+            minThreshold,
+            unitPrice,
+            restockSuggestion
+        }
+
+        const success = await updateProduct(
+            req.params.id,
+            updatedProduct.productName,
+            updatedProduct.categoryName,
+            updatedProduct.quantity,
+            updatedProduct.minThreshold,
+            updatedProduct.unitPrice,
+            updatedProduct.restockSuggestion,
+            req.session.user._id,
+            fullName
+        )
+
+        if(!success){
+            throw("Failed to update product")
+        }
+
+        res.status(200).json({
+            message: "Product updated successfully",
+            ...updatedProduct,
+            _id: req.params.id,
+            stockStatus: computeStockStatus(quantity, minThreshold),
+            formattedPrice: (unitPrice * quantity).toFixed(2)
+        })
   }catch(e){
     res.status(400).json({ message: e.message })
   }
+})
+
+router.post('/buy/:id', async (req, res) => {
+    try{
+        const productId = req.params.id
+        const { quantity } = req.body
+
+        if(quantity == null || isNaN(quantity) || quantity <= 0){
+            return res.status(400).json({ message: "Invalid quantity" })
+        }
+
+        const product = await getProductById(productId)
+
+        if(product.quantity < quantity){
+            return res.status(400).json({ message: "Not enough stock" })
+        }
+
+        const newQuantity = product.quantity - quantity
+
+        const fullName = `${req.session.user.firstName} ${req.session.user.lastName}`
+
+        await updateProductQuantity(productId, newQuantity, req.session.user._id, fullName)
+
+        return res.status(200).json({
+            message: "Product purchased successfully",
+            updatedQuantity: newQuantity,
+            minThreshold: product.minThreshold
+        })
+    }catch(err){
+        res.status(err.status || 500).json({ message: err.message || "Server error" })
+    }
 })
 
 export default router;
