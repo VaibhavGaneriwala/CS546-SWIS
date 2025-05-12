@@ -1,5 +1,5 @@
+// logController.js
 import { auditLogs } from '../config/mongoCollections.js'
-import { ObjectId } from 'mongodb'
 
 export const getAuditLogs = async () => {
   const auditLogsCol = await auditLogs()
@@ -12,11 +12,10 @@ export const getAuditLogsByUser = async (userId) => {
 }
 
 
-export const addAuditLog = async (userId, name, action, details) => {
+export const addAuditLog = async (userId, action, details) => {
     const auditLogsCol = await auditLogs()
     const auditLog = {
         userId,
-        userName: name,
         action,
         details,
         timestamp: new Date()

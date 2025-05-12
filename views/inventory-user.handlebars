@@ -1,10 +1,10 @@
 <div class="container">
     <main class="main-content">
         <header class="top-bar">
-            <form method="GET" action="/inventory" style="width: 60%; display: flex; gap: 8px; align-items: center;">
+            <form method="GET" action="/inventory/user" style="width: 60%; display: flex; gap: 8px; align-items: center;">
                 <input type="text" name="search" placeholder="Search product" value="{{search}}" style="width: 100%;" />
                 {{#if search}}
-                <a href="/inventory"
+                <a href="/inventory/user"
                     style="padding: 8px 14px; background: #eee; border-radius: 6px; color: #333; text-decoration: none; font-size: 15px; border: 1px solid #ddd;">Clear</a>
                 {{/if}}
             </form>
@@ -89,71 +89,3 @@
         </section>
     </main>
 </div>
-
-<script>
-    function downloadCSV() {
-        window.location.href = '/inventory/export';
-    }
-
-    function openAddProductModal() {
-        document.getElementById('addProductModal').style.display = 'block';
-    }
-
-    function closeAddProductModal() {
-        document.getElementById('addProductModal').style.display = 'none';
-    }
-
-    async function handleAddProduct(event) {
-        event.preventDefault();
-
-        // Clear previous error messages
-        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
-
-        const formData = {
-            productName: document.getElementById('productName').value,
-            categoryName: document.getElementById('categoryName').value,
-            quantity: parseInt(document.getElementById('quantity').value),
-            minThreshold: parseInt(document.getElementById('minThreshold').value),
-            unitPrice: parseFloat(document.getElementById('unitPrice').value),
-            restockSuggestion: {
-                nextRestockDate: document.getElementById('nextRestockDate').value,
-                recommendedQty: parseInt(document.getElementById('recommendedQty').value)
-            }
-        };
-
-        try {
-            const response = await fetch('/inventory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                // Close modal and refresh page
-                closeAddProductModal();
-                window.location.reload();
-            } else {
-                const error = await response.json();
-                // Display error message
-                const errorElement = document.getElementById('productNameError');
-                errorElement.textContent = error.message || 'Failed to add product';
-                errorElement.style.display = 'block';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            const errorElement = document.getElementById('productNameError');
-            errorElement.textContent = 'An error occurred while adding the product';
-            errorElement.style.display = 'block';
-        }
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function (event) {
-        const modal = document.getElementById('addProductModal');
-        if (event.target === modal) {
-            closeAddProductModal();
-        }
-    }
-</script>

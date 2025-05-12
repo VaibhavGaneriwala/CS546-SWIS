@@ -25,7 +25,7 @@ export const inventoryRedirectMiddleware = (req, res, next) => {
     }
 
     return res.redirect('/inventory/user')
-};
+}
 
 //middleware for admin routes
 export const adminOnly = (req, res, next) => {
@@ -36,4 +36,4 @@ export const adminOnly = (req, res, next) => {
         })
     }
     next()
-};
+}

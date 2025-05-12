@@ -281,3 +281,7 @@ body {
         padding: 16px 6px;
     }
 }
+
+.error-message {
+  color: red;
+}

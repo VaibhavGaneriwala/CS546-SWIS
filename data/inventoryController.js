@@ -38,29 +38,48 @@ async function addProduct(productName, categoryName, quantity, minThreshold, uni
     return true;
 }
 
-//probably needs to be changed to find using id
-async function updateProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, userId, name) {
+async function updateProduct(productId, productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, userId, name) {
+    if(!productId || !ObjectId.isValid(productId)){
+        throw { status: 400, message: "Invalid product ID" }
+    }
 
-    if (!productName || !categoryName || !quantity || !minThreshold || !unitPrice || !restockSuggestion) throw { status: 400, message: "You must supply all fields!" };
+    if(!productName || !categoryName || !quantity || !minThreshold || !unitPrice || !restockSuggestion){
+        throw { status: 400, message: "You must supply all fields!" }
+    }
 
-    productName = helpers.validProductName(productName);
-    categoryName = helpers.validCategoryName(categoryName);
-    quantity = helpers.validQuantity(quantity);
-    minThreshold = helpers.validMinThreshold(minThreshold);
-    unitPrice = helpers.validUnitPrice(unitPrice);
-    restockSuggestion = helpers.validRestockSuggestion(restockSuggestion);
+    productName = helpers.validProductName(productName)
+    categoryName = helpers.validCategoryName(categoryName)
+    quantity = helpers.validQuantity(quantity)
+    minThreshold = helpers.validMinThreshold(minThreshold)
+    unitPrice = helpers.validUnitPrice(unitPrice)
+    restockSuggestion = helpers.validRestockSuggestion(restockSuggestion)
 
-    const inventoryCollection = await inventory();
+    const inventoryCollection = await inventory()
+    const id = new ObjectId(productId)
 
-    const existingProduct = await inventoryCollection.findOne({ productName });
-    if (!existingProduct) throw new Error("Product not found");
+    const existingProduct = await inventoryCollection.findOne({ _id: id })
+    if(!existingProduct){
+        throw new Error("Product not found")
+    }
 
-    // create update object with only the fields that are provided
-    const updateData = {productName: productName, categoryName: categoryName, quantity: quantity, minThreshold: minThreshold, unitPrice: unitPrice, restockSuggestion: restockSuggestion, lastUpdated: helpers.createCurrentDateandTime()};
+    const updateData = {
+        productName: productName,
+        categoryName: categoryName, 
+        quantity: quantity, 
+        minThreshold: minThreshold, 
+        unitPrice: unitPrice, 
+        restockSuggestion: restockSuggestion, 
+        lastUpdated: helpers.createCurrentDateandTime()
+    }
 
-    const updateInfo = await inventoryCollection.updateOne({ productName: existingProduct.productName },{ $set: updateData});
+    const updateInfo = await inventoryCollection.updateOne(
+        { _id: id },
+        { $set: updateData }
+    )
 
-    if (!updateInfo.acknowledged || updateInfo.modifiedCount === 0) throw new Error("Could not update product");
+    if(!updateInfo.acknowledged || updateInfo.modifiedCount === 0){
+        throw new Error("Could not update product")
+    }
 
     // Log the update action
     await addAuditLog(userId, name, 'updateProduct', {
@@ -68,10 +87,15 @@ async function updateProduct(productName, categoryName, quantity, minThreshold, 
         after: updateData
     })
 
-    return true;
+    return true
 }
 
 async function removeProduct(productId, userId, name) {
+
+    if(!productId || !ObjectId.isValid(productId)){
+        throw { status: 400, message: "Invalid product ID" }
+    }
+
     const inventoryCollection = await inventory()
 
     const id = new ObjectId(productId)

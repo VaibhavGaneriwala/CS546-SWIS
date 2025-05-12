@@ -29,7 +29,7 @@ router.get("/inventory/admin", authMiddleware, adminOnly, async (req, res) => {
         const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
         const categoryCount = new Set(filteredProducts.map(p => p.categoryName?.toLowerCase())).size;
-        const lowStockCount = filteredProducts.filter(p => p.quantity <= p.minThreshold).length;
+        const lowStockCount = filteredProducts.filter(p => p.quantity > 0 && p.quantity <= p.minThreshold).length;
         const noStockCount = filteredProducts.filter(p => p.quantity === 0).length;
 
         // Calculate total inventory value
@@ -232,5 +232,18 @@ router.delete("/inventory/:id", authMiddleware, adminOnly, async (req, res) => {
         res.status(400).json({ message: e.message })
     }
 });
+
+router.put("/inventory/:id", authMiddleware, adminOnly, async (req, res) => {
+  try{
+    const fullName = `${req.session.user.firstName} ${req.session.user.lastName}`
+    const { productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion } = req.body
+
+    const result = await updateProduct(req.params.id, productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, req.session.user._id, fullName)
+    res.status(200).json({ message: "Product updated successfully" })
+  }catch(e){
+    res.status(400).json({ message: e.message })
+  }
+})
+
 
 export default router;

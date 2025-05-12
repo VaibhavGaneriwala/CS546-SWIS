@@ -2,7 +2,7 @@ import express from 'express'
 import { getAuditLogs } from '../data/auditController.js'
 import { authMiddleware } from '../middlewares/auth.js'
 
-const router = express.Router();
+const router = express.Router()
 
 router.get('/', authMiddleware, async (req, res) => {
     try{
