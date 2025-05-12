@@ -1,7 +1,8 @@
 <div class="container">
     <main class="main-content">
         <header class="top-bar">
-            <form method="GET" action="/inventory/user" style="width: 60%; display: flex; gap: 8px; align-items: center;">
+            <form method="GET" action="/inventory/user"
+                style="width: 60%; display: flex; gap: 8px; align-items: center;">
                 <input type="text" name="search" placeholder="Search product" value="{{search}}" style="width: 100%;" />
                 {{#if search}}
                 <a href="/inventory/user"
@@ -68,21 +69,21 @@
                         <td>{{restockSuggestion.nextRestockDate}}</td>
                         <td class="{{stockStatus}}">
                             {{#if (eq stockStatus 'out-stock')}}
-                                Out of stock
+                            Out of stock
                             {{else if (eq stockStatus 'low-stock')}}
-                                Low stock
+                            Low stock
                             {{else}}
-                                In stock
+                            In stock
                             {{/if}}
                         </td>
                         <td>
                             {{#if (eq stockStatus 'out-stock')}}
-                                Out of stock
+                            Out of stock
                             {{else}}
-                                <form class="buy-form" data-id="{{_id}}">
-                                    <input type="number" name="buy-quantity" placeholder="Quantity" min="1" required />
-                                    <button type="submit">Buy</button>
-                                </form>
+                            <form class="buy-form" data-id="{{_id}}">
+                                <input type="number" name="buy-quantity" placeholder="Quantity" min="1" required />
+                                <button type="submit" class="buy-btn">Buy</button>
+                            </form>
                             {{/if}}
                         </td>
                     </tr>
@@ -108,16 +109,16 @@
     function showMessage(message, isError = false) {
         const errorDiv = document.getElementById('error')
 
-        if(!errorDiv){
+        if (!errorDiv) {
             return
         }
 
         errorDiv.textContent = message
         errorDiv.style.display = 'block'
 
-        if(isError){
+        if (isError) {
             errorDiv.style.color = 'red'
-        }else{
+        } else {
             errorDiv.style.color = 'green'
         }
 
@@ -128,11 +129,11 @@
     }
 
     function formatStockStatus(status) {
-        if(status === "out-stock"){
+        if (status === "out-stock") {
             return "Out of stock"
-        }else if(status === "low-stock"){
+        } else if (status === "low-stock") {
             return "Low stock"
-        }else{
+        } else {
             return "In stock"
         }
     }
@@ -145,9 +146,9 @@
 
         let stockStatus = 'in-stock'
 
-        if(newQuantity === 0){
+        if (newQuantity === 0) {
             stockStatus = 'out-stock'
-        }else if(newQuantity < minThreshold){
+        } else if (newQuantity < minThreshold) {
             stockStatus = 'low-stock'
         }
 
@@ -158,7 +159,7 @@
 
         //replace form with "Out of stock" if quantity is 0
         const buyCell = row.querySelector('td:last-child')
-        if(newQuantity === 0){
+        if (newQuantity === 0) {
             buyCell.innerHTML = 'Out of stock'
         }
     }
@@ -173,12 +174,12 @@
                 const quantity = parseInt(quantityInput.value)
                 const row = form.closest('tr')
 
-                if(!quantity || quantity <= 0){
+                if (!quantity || quantity <= 0) {
                     showMessage("Please enter a valid quantity.", true)
                     return
                 }
 
-                try{
+                try {
                     const response = await fetch(`/buy/${productId}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -187,7 +188,7 @@
 
                     const result = await response.json()
 
-                    if(response.ok){
+                    if (response.ok) {
                         showMessage("Purchase successful!")
                         quantityInput.value = ''
 
@@ -195,10 +196,10 @@
                         const minThreshold = result.minThreshold
 
                         updateProductRow(row, newQty, minThreshold)
-                    }else{
+                    } else {
                         showMessage(result.message || "Error processing purchase.", true)
                     }
-                }catch(err){
+                } catch (err) {
                     showMessage("Server error.", true)
                 }
             })

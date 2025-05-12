@@ -137,3 +137,6 @@ dist
 
 # Ignore vs code workspace-specific settings
 .vscode/
+
+# Ignore macOS files
+**/.DS_Store
