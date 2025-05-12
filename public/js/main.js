@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const username = document.getElementById('username').value.trim();
+            const username = document.getElementById('username').value.trim().toLowerCase();
             const password = document.getElementById('password').value.trim();
 
             if (!username || !password) {
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
-            const username = document.getElementById('username').value.trim();
+            const username = document.getElementById('username').value.trim().toLowerCase();
             const password = document.getElementById('password').value.trim();
             const confirmPassword = document.getElementById('confirmPassword').value.trim();
             const role = document.getElementById('role').value;

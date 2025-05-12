@@ -91,11 +91,6 @@ async function updateProduct(productId, productName, categoryName, quantity, min
 }
 
 async function removeProduct(productId, userId, name) {
-
-    if(!productId || !ObjectId.isValid(productId)){
-        throw { status: 400, message: "Invalid product ID" }
-    }
-
     const inventoryCollection = await inventory()
 
     const id = new ObjectId(productId)

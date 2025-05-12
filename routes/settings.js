@@ -4,6 +4,7 @@ import { users } from '../config/mongoCollections.js'
 import { authMiddleware } from '../middlewares/auth.js'
 import { addAuditLog } from '../data/logController.js'
 import { ObjectId } from 'mongodb'
+import { validEmail, validFirstName, validLastName, validUsername } from '../utils/validations.js'
 
 const router = express.Router()
 
@@ -38,20 +39,30 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
     try {
         const user = req.session.user
-        if (!user || !user._id) {
+        if(!user || !user._id){
             throw new Error('User not authenticated')
         }
 
         const usersCollection = await users()
         const userDoc = await usersCollection.findOne({ _id: new ObjectId(user._id) })
-        if (!userDoc) {
+        if(!userDoc){
             throw new Error('User not found')
         }
 
-        const { firstName, lastName, email, username } = req.body
+        let { firstName, lastName, email, username } = req.body
+
+        if(!firstName || !lastName || !email || !username){
+            throw('Please fill in all fields')
+        }
+
+        firstName = validFirstName(firstName)
+        lastName = validLastName(lastName)
+        email = validEmail(email)
+        username = validUsername(username).toLowerCase()
+
         await usersCollection.updateOne(
             { _id: new ObjectId(user._id) }, 
-            { $set: { firstName, lastName, email, username } }
+            { $set: { firstName, lastName, email, username} }
         )
         res.redirect('/settings')
     } catch (e) {
