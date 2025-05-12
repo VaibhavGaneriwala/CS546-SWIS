@@ -273,32 +273,31 @@
         }
     }
 
-    function deleteProduct(productId) {
+    async function deleteProduct(productId) {
 
-        const errorElement = document.getElementById('error')
+        const errorElement = document.getElementById('error')  
+        
+        if(errorElement){
+            errorElement.textContent = ''
+            errorElement.style.display = 'none'
+        }
 
         try{
-            fetch(`/inventory/${productId}`, {
+            const response = await fetch(`/inventory/${productId}`, {
                 method: 'DELETE'
             })
-            .then(res => {
-                if(res.ok){
-                    window.location.reload()
-                }else{
-                    res.json().then(err => {
-                        console.error('Error:', error)
-                        const errorElement = document.getElementById('productNameError')
-                        errorElement.textContent = err.message || "Delete failed"
-                        errorElement.style.display = 'block'
-                        setTimeout(() => (errorElement.style.display = 'none'), 4000)
-                    })
-                }
-            })
+            if(response.ok){
+                window.location.reload()
+            }else{
+                const error = await response.json()
+                errorElement.textContent = error.message || "Delete failed"
+                errorElement.style.display = 'block'
+                setTimeout(() => (errorElement.style.display = 'none'), 5000)
+            }
         }catch(err){
-            console.error('Error:', error)
             errorElement.textContent = 'Error trying to delete product'
             errorElement.style.display = 'block'
-            setTimeout(() => (errorElement.style.display = 'none'), 4000)
+            setTimeout(() => (errorElement.style.display = 'none'), 5000)
         }
     }
 
