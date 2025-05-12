@@ -3,11 +3,11 @@ import * as helpers from "../utils/validations.js";
 import { addAuditLog } from './auditController.js';
 import { ObjectId } from 'mongodb';
 
-export {addProduct, updateProduct, removeProduct, getProductByName, getAllProducts};
+export {addProduct, updateProduct, removeProduct, getProductByName, getAllProducts, getProductById, updateProductQuantity};
 
 async function addProduct(productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, userId, name) {
 
-    if (!productName || !categoryName || !quantity || !minThreshold || !unitPrice || !restockSuggestion) throw { status: 400, message: "You must supply all fields!" };
+    if (!productName || !categoryName || quantity == null || !minThreshold || !unitPrice || !restockSuggestion) throw { status: 400, message: "You must supply all fields!" };
 
     productName = helpers.validProductName(productName);
     categoryName = helpers.validCategoryName(categoryName);
@@ -35,7 +35,7 @@ async function addProduct(productName, categoryName, quantity, minThreshold, uni
         restockSuggestion
     })
 
-    return true;
+    return { insertedId: insertInfo.insertedId }
 }
 
 async function updateProduct(productId, productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, userId, name) {
@@ -43,7 +43,7 @@ async function updateProduct(productId, productName, categoryName, quantity, min
         throw { status: 400, message: "Invalid product ID" }
     }
 
-    if(!productName || !categoryName || !quantity || !minThreshold || !unitPrice || !restockSuggestion){
+    if(!productName || !categoryName || quantity == null || !minThreshold || !unitPrice || !restockSuggestion){
         throw { status: 400, message: "You must supply all fields!" }
     }
 
@@ -130,4 +130,56 @@ async function getAllProducts() {
     const inventoryCollection = await inventory();
     const allProducts = await inventoryCollection.find({}).toArray();
     return allProducts || [];
+}
+
+async function getProductById(productId) {
+    if (!productId || !ObjectId.isValid(productId)) {
+        throw { status: 400, message: "Invalid product ID" };
+    }
+
+    const inventoryCollection = await inventory();
+    const product = await inventoryCollection.findOne({ _id: new ObjectId(productId) });
+
+    if (!product) {
+        throw { status: 404, message: "Product not found" };
+    }
+
+    return product;
+}
+
+async function updateProductQuantity(productId, newQuantity, userId, name) {
+    if(!productId || !ObjectId.isValid(productId)){
+        throw { status: 400, message: "Invalid product ID" }
+    }
+
+    newQuantity = helpers.validQuantity(newQuantity)
+    const inventoryCollection = await inventory()
+    const id = new ObjectId(productId)
+
+    const existingProduct = await inventoryCollection.findOne({ _id: id })
+    if(!existingProduct){
+        throw { status: 404, message: "Product not found" }
+    }
+
+    const updateInfo = await inventoryCollection.updateOne(
+        { _id: id },
+        {
+            $set: {
+                quantity: newQuantity,
+                lastUpdated: helpers.createCurrentDateandTime()
+            }
+        }
+    );
+
+    if(!updateInfo.acknowledged || updateInfo.modifiedCount === 0){
+        throw("Failed to update quantity")
+    }
+
+    await addAuditLog(userId, name, 'buyProduct', {
+        productName: existingProduct.productName,
+        quantityBefore: existingProduct.quantity,
+        quantityAfter: newQuantity
+    })
+
+    return true
 }
