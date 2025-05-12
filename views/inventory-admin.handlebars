@@ -39,6 +39,9 @@
         <section class="products">
             <div class="product-header">
                 <h2>Products</h2>
+
+                <div id="error" class="error-message" hidden></div>
+
                 <div class="buttons">
                     <button class="add" onclick="openAddProductModal()">Add Product</button>
                     <button class="download" onclick="downloadCSV()">Download all</button>
@@ -78,7 +81,7 @@
                         </td>
                         <td>${{formattedPrice}}</td>
                         <td>
-                            <button onclick="editProduct('{{productName}}')">Edit</button>
+                            <button onclick="openEditModal('{{_id}}', '{{productName}}', '{{categoryName}}', {{quantity}}, {{minThreshold}}, {{unitPrice}}, '{{restockSuggestion.nextRestockDate}}', {{restockSuggestion.recommendedQty}})">Edit</button>
                             <button onclick="deleteProduct('{{_id}}')">Delete</button>
                         </td>
                     </tr>
@@ -129,7 +132,7 @@
             </div>
             <div class="form-group">
                 <label for="nextRestockDate">Next Restock Date</label>
-                <input type="date" id="nextRestockDate" name="nextRestockDate" required>
+                <input type="date" id="nextRestockDate" name="nextRestockDate" required min="{{todayDate}}">
                 <div class="error-message" id="nextRestockDateError"></div>
             </div>
             <div class="form-group">
@@ -141,6 +144,62 @@
         </form>
     </div>
 </div>
+
+<!-- Edit Product Modal -->
+<div id="editProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Edit Product</h2>
+        <form id="editProductForm" onsubmit="handleEditProduct(event)">
+        <input type="hidden" id="editProductId">
+
+        <div class="form-group">
+            <label for="editProductName">Product Name</label>
+            <input type="text" id="editProductName" required>
+            <div class="error-message" id="editProductNameError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="editCategoryName">Category</label>
+            <input type="text" id="editCategoryName" required>
+            <div class="error-message" id="editCategoryNameError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="editQuantity">Quantity</label>
+            <input type="number" id="editQuantity" required>
+            <div class="error-message" id="editQuantityError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="editMinThreshold">Min Threshold</label>
+            <input type="number" id="editMinThreshold" required>
+            <div class="error-message" id="editMinThresholdError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="editUnitPrice">Unit Price ($)</label>
+            <input type="number" step="0.01" id="editUnitPrice" required>
+            <div class="error-message" id="editUnitPriceError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="editNextRestockDate">Next Restock Date</label>
+            <input type="date" id="editNextRestockDate" required min="{{todayDate}}">
+            <div class="error-message" id="editNextRestockDateError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="editRecommendedQty">Recommended Restock Quantity</label>
+            <input type="number" id="editRecommendedQty" required>
+            <div class="error-message" id="editRecommendedQtyError"></div>
+        </div>
+
+        <button type="submit" class="submit-btn">Save Changes</button>
+        </form>
+    </div>
+</div>
+
 
 <script>
     function downloadCSV() {
@@ -204,35 +263,121 @@
     // Close modal when clicking outside
     window.onclick = function (event) {
         const modal = document.getElementById('addProductModal');
+        const editModal = document.getElementById('editProductModal')
         if (event.target === modal) {
             closeAddProductModal();
         }
+
+        if(event.target === editModal){
+            closeEditModal()
+        }
     }
 
-    function deleteProduct(productId) {
-        if(!productId){
-            console.error('Error:', error)
-            const errorElement = document.getElementById('productNameError')
-            errorElement.textContent = 'No product ID provided'
-            errorElement.style.display = 'block'
-            return
+    async function deleteProduct(productId) {
+
+        const errorElement = document.getElementById('error')  
+        
+        if(errorElement){
+            errorElement.textContent = ''
+            errorElement.style.display = 'none'
         }
 
-        fetch(`/inventory/${productId}`, {
-            method: 'DELETE'
-        })
-        .then(res => {
-            if(res.ok){
+        try{
+            const response = await fetch(`/inventory/${productId}`, {
+                method: 'DELETE'
+            })
+            if(response.ok){
                 window.location.reload()
             }else{
-                res.json().then(err => {
-                    console.error('Error:', error)
-                    const errorElement = document.getElementById('productNameError')
-                    errorElement.textContent = err.message || 'Delete failed'
-                    errorElement.style.display = 'block'
-                })
+                const error = await response.json()
+                errorElement.textContent = error.message || "Delete failed"
+                errorElement.style.display = 'block'
+                setTimeout(() => (errorElement.style.display = 'none'), 5000)
+            }
+        }catch(err){
+            errorElement.textContent = 'Error trying to delete product'
+            errorElement.style.display = 'block'
+            setTimeout(() => (errorElement.style.display = 'none'), 5000)
+        }
+    }
+
+    function clearEditErrors() {
+        const errorIds = [
+            'editProductNameError',
+            'editCategoryNameError',
+            'editQuantityError',
+            'editMinThresholdError',
+            'editUnitPriceError',
+            'editNextRestockDateError',
+            'editRecommendedQtyError'
+        ]
+        errorIds.forEach(id => {
+            const errors = document.getElementById(id)
+            if(errors){
+                errors.style.display = 'none'
             }
         })
+    }
+
+    function openEditModal(id, name, category, qty, threshold, price, restockDate, recommendedQty) {
+        clearEditErrors()
+        document.getElementById('editProductId').value = id
+        document.getElementById('editProductName').value = name
+        document.getElementById('editCategoryName').value = category
+        document.getElementById('editQuantity').value = qty
+        document.getElementById('editMinThreshold').value = threshold
+        document.getElementById('editUnitPrice').value = price
+        document.getElementById('editNextRestockDate').value = restockDate
+        document.getElementById('editRecommendedQty').value = recommendedQty
+
+        document.getElementById('editProductModal').style.display = 'block'
+    }
+
+    function closeEditModal() {
+        document.getElementById('editProductModal').style.display = 'none'
+    }
+
+    async function handleEditProduct(event) {
+        event.preventDefault()
+        clearEditErrors()
+
+        const productId = document.getElementById('editProductId').value
+
+        const updatedProduct = {
+            productName: document.getElementById('editProductName').value,
+            categoryName: document.getElementById('editCategoryName').value,
+            quantity: parseInt(document.getElementById('editQuantity').value),
+            minThreshold: parseInt(document.getElementById('editMinThreshold').value),
+            unitPrice: parseFloat(document.getElementById('editUnitPrice').value),
+            restockSuggestion: {
+                nextRestockDate: document.getElementById('editNextRestockDate').value,
+                recommendedQty: parseInt(document.getElementById('editRecommendedQty').value)
+            }
+        }
+
+        try{
+            const response = await fetch(`/inventory/${productId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedProduct)
+            })
+
+            if(response.ok){
+                closeEditModal()
+                window.location.reload()
+            }else{
+                const error = await response.json()
+                const errorElement = document.getElementById('editProductNameError')
+                errorElement.textContent = error.message || "Failed to update product"
+                errorElement.style.display = 'block'
+            }
+
+        }catch(err){
+            const errorElement = document.getElementById('editProductNameError')
+            errorElement.textContent = "Error trying to update product"
+            errorElement.style.display = 'block'
+        }
+        
     }
 
 </script>

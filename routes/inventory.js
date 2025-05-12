@@ -46,9 +46,12 @@ router.get("/inventory/admin", authMiddleware, adminOnly, async (req, res) => {
             formattedPrice: (product.quantity * product.unitPrice).toFixed(2)
         }));
 
+        const today = new Date().toISOString().split("T")[0];
+
         res.render('inventory-admin', {
             cssFile: 'inventory.css',
             title: 'Inventory | SWIS',
+            todayDate: today,
             totalProducts: filteredProducts.length,
             products: productsWithStatus,
             categoryCount,
@@ -231,6 +234,18 @@ router.delete("/inventory/:id", authMiddleware, adminOnly, async (req, res) => {
     }catch(e){
         res.status(400).json({ message: e.message })
     }
-});
+})
+
+router.put("/inventory/:id", authMiddleware, adminOnly, async (req, res) => {
+  try{
+    const fullName = `${req.session.user.firstName} ${req.session.user.lastName}`
+    const { productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion } = req.body
+
+    const result = await updateProduct(req.params.id, productName, categoryName, quantity, minThreshold, unitPrice, restockSuggestion, req.session.user._id, fullName)
+    res.status(200).json({ message: "Product updated successfully" })
+  }catch(e){
+    res.status(400).json({ message: e.message })
+  }
+})
 
 export default router;
