@@ -205,6 +205,32 @@
     </div>
 </div>
 
+<!-- Toast Notification -->
+<div id="toast" class="toast" style="display: none;">
+    <p id="toastMessage"></p>
+</div>
+
+<style>
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        animation: fadeInOut 4s ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateY(20px); }
+        10%, 90% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(20px); }
+    }
+</style>
+
 
 <script>
     function downloadCSV() {
@@ -305,7 +331,8 @@
                 // Close modal and refresh page
                 const newProduct = await response.json()
                 closeAddProductModal();
-                appendNewProductRow(newProduct)
+                appendNewProductRow(newProduct);
+                showToast('Product added successfully!');
             } else {
                 const error = await response.json();
                 // Display error message
@@ -491,5 +518,16 @@
             })
         })
     })
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        toastMessage.textContent = message;
+        toast.style.display = 'block';
+
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 4000);
+    }
 
 </script>
