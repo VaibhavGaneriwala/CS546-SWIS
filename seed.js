@@ -55,6 +55,7 @@ for (let i = 0; i < 50; i++) {
         productName,
         categoryName: category,
         quantity,
+        expectedQuantity: quantity,
         minThreshold,
         unitPrice,
         restockSuggestion: {
@@ -71,7 +72,7 @@ await inventory.insertMany(items)
 const sampleActions = ['addProduct', 'updateProduct', 'removeProduct']
 const sampleLogs = []
 
-for(let i = 0; i < 20; i++){
+for (let i = 0; i < 20; i++) {
     const userIndex = Math.floor(Math.random() * userDocs.length)
     const user = userDocs[userIndex]
     const action = sampleActions[i % sampleActions.length]
@@ -82,12 +83,12 @@ for(let i = 0; i < 20; i++){
         categoryName: product.categoryName
     }
 
-    if(action === 'updateProduct'){
+    if (action === 'updateProduct') {
         details.before = { quantity: product.quantity }
         details.after = { quantity: product.quantity + 5 }
     }
 
-    if(action === 'removeProduct'){
+    if (action === 'removeProduct') {
         details.deleted = true;
     }
 
@@ -103,7 +104,7 @@ for(let i = 0; i < 20; i++){
 }
 
 //20 buyProduct logs
-for(let i = 0; i < 20; i++){
+for (let i = 0; i < 20; i++) {
     const userIndex = Math.floor(Math.random() * userDocs.length)
     const user = userDocs[userIndex]
     const productIndex = Math.floor(Math.random() * items.length)
