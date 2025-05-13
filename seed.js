@@ -69,7 +69,7 @@ for (let i = 0; i < 50; i++) {
 await inventory.insertMany(items)
 
 //generate 20 logs
-const sampleActions = ['addProduct', 'updateProduct', 'removeProduct']
+const sampleActions = ['addProduct', 'updateProduct', 'deleteProduct']
 const sampleLogs = []
 
 for (let i = 0; i < 20; i++) {
@@ -78,21 +78,41 @@ for (let i = 0; i < 20; i++) {
     const action = sampleActions[i % sampleActions.length]
     const product = items[i]
 
-    const details = {
-        productName: product.productName,
-        categoryName: product.categoryName
+    let details = {}
+
+    if(action === 'addProduct'){
+        details = {
+            productName: product.productName,
+            categoryName: product.categoryName,
+            quantity: product.quantity,
+            minThreshold: product.minThreshold,
+            unitPrice: product.unitPrice,
+            restockSuggestion: { ...product.restockSuggestion },
+            lastUpdated: new Date
+        }
     }
 
-    if (action === 'updateProduct') {
-        details.before = { quantity: product.quantity }
-        details.after = { quantity: product.quantity + 5 }
+    if(action === 'updateProduct'){
+        details.before = { ...product }
+        details.after = {
+            productName: product.productName,
+            categoryName: product.categoryName,
+            quantity: product.quantity + Math.floor(Math.random() * 10) + 1,
+            minThreshold: product.minThreshold,
+            unitPrice: product.unitPrice,
+            restockSuggestion: { ...product.restockSuggestion },
+            lastUpdated: new Date
+        }
     }
 
-    if (action === 'removeProduct') {
-        details.deleted = true;
+    if(action === 'deleteProduct'){
+        details.productName = product.productName
+        details.categoryName = product.categoryName
+        details.quantity = product.quantity
     }
 
     const log = {
+        productId: product._id,
         userId: userInsertResult.insertedIds[userIndex],
         userName: `${user.firstName} ${user.lastName}`,
         action,
@@ -117,6 +137,7 @@ for (let i = 0; i < 20; i++) {
     items[productIndex].quantity = quantityAfter
 
     const log = {
+        productId: product._id,
         userId: userInsertResult.insertedIds[userIndex],
         userName: `${user.firstName} ${user.lastName}`,
         action: 'buyProduct',
