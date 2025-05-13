@@ -72,35 +72,64 @@ const sampleActions = ['addProduct', 'updateProduct', 'removeProduct']
 const sampleLogs = []
 
 for(let i = 0; i < 20; i++){
-  const userIndex = Math.floor(Math.random() * userDocs.length)
-  const user = userDocs[userIndex]
-  const action = sampleActions[i % sampleActions.length]
-  const product = items[i]
+    const userIndex = Math.floor(Math.random() * userDocs.length)
+    const user = userDocs[userIndex]
+    const action = sampleActions[i % sampleActions.length]
+    const product = items[i]
 
-  const details = {
-    productName: product.productName,
-    categoryName: product.categoryName
-  }
+    const details = {
+        productName: product.productName,
+        categoryName: product.categoryName
+    }
 
-  if(action === 'updateProduct'){
-    details.before = { quantity: product.quantity }
-    details.after = { quantity: product.quantity + 5 }
-  }
+    if(action === 'updateProduct'){
+        details.before = { quantity: product.quantity }
+        details.after = { quantity: product.quantity + 5 }
+    }
 
-  if(action === 'removeProduct'){
-    details.deleted = true;
-  }
+    if(action === 'removeProduct'){
+        details.deleted = true;
+    }
 
-  const log = {
-    userId: userInsertResult.insertedIds[userIndex],
-    userName: `${user.firstName} ${user.lastName}`,
-    action,
-    details,
-    timestamp: new Date(Date.now() - Math.floor(Math.random() * 1e9))
-  };
+    const log = {
+        userId: userInsertResult.insertedIds[userIndex],
+        userName: `${user.firstName} ${user.lastName}`,
+        action,
+        details,
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 1e9))
+    };
 
-  sampleLogs.push(log)
+    sampleLogs.push(log)
 }
+
+//20 buyProduct logs
+for(let i = 0; i < 20; i++){
+    const userIndex = Math.floor(Math.random() * userDocs.length)
+    const user = userDocs[userIndex]
+    const productIndex = Math.floor(Math.random() * items.length)
+    const product = items[productIndex]
+
+    const qtyBought = Math.floor(Math.random() * 5) + 1
+    const quantityBefore = product.quantity
+    const quantityAfter = Math.max(0, quantityBefore - qtyBought)
+
+    items[productIndex].quantity = quantityAfter
+
+    const log = {
+        userId: userInsertResult.insertedIds[userIndex],
+        userName: `${user.firstName} ${user.lastName}`,
+        action: 'buyProduct',
+        details: {
+            productName: product.productName,
+            quantityBefore,
+            quantityAfter
+        },
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 1e9))
+    }
+
+    sampleLogs.push(log)
+}
+
 
 await auditLogs.insertMany(sampleLogs)
 
