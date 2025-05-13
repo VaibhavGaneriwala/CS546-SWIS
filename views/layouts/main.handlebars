@@ -19,18 +19,18 @@
             </div>
             <nav class="menu">
                 {{#if (eq user.roleName 'admin')}}
-                    <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
-                    <a href="/inventory/admin" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
-                    <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
-                    <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
-                    <a href="/logs" class="{{#if (eq currentPath '/logs')}}active{{/if}}">Logs</a>
-                    <a href="/logout">Log Out</a>
+                <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
+                <a href="/inventory/admin" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
+                <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
+                <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
+                <a href="/logs" class="{{#if (eq currentPath '/logs')}}active{{/if}}">Logs</a>
+                <a href="/logout">Log Out</a>
                 {{else}}
-                    <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
-                    <a href="/inventory/user" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
-                    <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
-                    <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
-                    <a href="/logout">Log Out</a>
+                <a href="/dashboard" class="{{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
+                <a href="/inventory/user" class="{{#if (eq currentPath '/inventory')}}active{{/if}}">Inventory</a>
+                <a href="/reports" class="{{#if (eq currentPath '/reports')}}active{{/if}}">Reports</a>
+                <a href="/settings" class="{{#if (eq currentPath '/settings')}}active{{/if}}">Settings</a>
+                <a href="/logout">Log Out</a>
                 {{/if}}
             </nav>
         </aside>
@@ -39,7 +39,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    {{#if user}}
+    <script>
+        let _discrepancyAlertActive = false;
+        function checkDiscrepancies() {
+            fetch('/dashboard/discrepancies')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.discrepancies && data.discrepancies.length > 0) {
+                        if (!_discrepancyAlertActive) {
+                            _discrepancyAlertActive = true;
+                            alert(`Inventory Discrepancy Detected!\nThere are ${data.discrepancies.length} inventory discrepancies. Please check the dashboard.`);
+                            _discrepancyAlertActive = false;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error checking discrepancies:', error));
+        }
+        setInterval(checkDiscrepancies, 15 * 1000);
+        checkDiscrepancies();
+    </script>
+    {{/if}}
 </body>
 
 </html>

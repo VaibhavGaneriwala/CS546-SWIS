@@ -33,6 +33,16 @@ const hbs = exphbs.create({
         },
         json: function (context) {
             return JSON.stringify(context);
+        },
+        gt: function (a, b) {
+            return a > b;
+        },
+        notEq: function (a, b) {
+            return a !== b;
+        },
+        capitalizeFirst: function(str) {
+            if (!str) return '';
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
     }
 });

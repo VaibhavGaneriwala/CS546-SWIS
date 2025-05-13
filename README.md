@@ -13,7 +13,7 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 - **Database:** MongoDB
 - **Real-Time Updates:** AJAX (Fetch API)
 - **Visualization:** Chart.js (for dashboards)
-- **Notifications:** Email/SMS integration (e.g., Nodemailer, Twilio)
+- **Notifications:** JavaScript
 
 ## 🌟 Core Features
 
@@ -35,18 +35,62 @@ The **Smart Warehouse Inventory System** provides tools to track inventory in re
 
 ```
 CS546-SWIS/
-├── backend/
-│   ├── models/
-│   ├── routes/ 
-│   ├── controllers/
-│   └── server.js
+├── config/
+│   ├── mongoCollections.js
+│   ├── mongoConnection.js
+│   └── settings.js
+├── data/
+│   ├── auditController.js
+│   ├── dashboardController.js
+│   ├── inventoryController.js
+│   ├── logController.js
+│   ├── reportController.js
+│   └── userController.js
+├── middlewares/
+│   └── auth.js
 ├── public/
 │   ├── css/
-│   ├── js/
-│   └── index.html
-├── .env
+│   │   ├── dashboard.css
+│   │   ├── inventory.css
+│   │   ├── login.css
+│   │   ├── logs.css
+│   │   ├── main.css
+│   │   ├── register.css
+│   │   ├── reports.css
+│   │   └── settings.css
+│   ├── images/
+│   │   └── swisLogo.png
+│   └── js/
+│       ├── main.js
+│       └── dashboard.js
+├── routes/
+│   ├── auditRoutes.js
+│   ├── dashboard.js
+│   ├── index.js
+│   ├── inventory.js
+│   ├── reports.js
+│   ├── settings.js
+│   └── users.js
+├── utils/
+│   └── validations.js
+├── views/
+│   ├── layouts/
+│   │   └── main.handlebars
+│   ├── dashboard.handlebars
+│   ├── error.handlebars
+│   ├── inventory-admin.handlebars
+│   ├── inventory-user.handlebars
+│   ├── login.handlebars
+│   ├── register.handlebars
+│   ├── reports.handlebars
+│   └── settings.handlebars
+├── .gitignore
+├── app.js
+├── LICENSE
 ├── package.json
-└── README.md
+├── package-lock.json
+├── README.md
+└── seed.js
 ```
 
 ## ⚙️ Setup Instructions
@@ -67,11 +111,10 @@ cd CS546-SWIS/
 npm install
 ```
 
-### 3. Create `.env` File
+### 3. Seed the database with seed file
 
 ```
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/swis-db
+npm run seed
 ```
 
 ### 4. Run the Application
@@ -82,12 +125,6 @@ npm start
 
 Visit `http://localhost:3000` in your browser.
 
-## 🧪 Sample API Routes
-
-- \`GET /api/inventory\` – Get all items
-- \`POST /api/inventory\` – Add a new item
-- \`PUT /api/inventory/:id\` – Update stock for an item
-- \`DELETE /api/inventory/:id\` – Remove an item
 
 ## 📈 Future Improvements
 

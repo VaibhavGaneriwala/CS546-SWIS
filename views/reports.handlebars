@@ -12,6 +12,14 @@
             <h3>Low Stock Items</h3>
             <p>{{totalLowStock}}</p>
         </div>
+        <div class="card">
+            <h3>Out Of Stock Items</h3>
+            <p>{{totalOutOfStock}}</p>
+        </div>
+        <div class="card">
+            <h3>Top Selling Item</h3>
+            <p>{{topSeller.name}} - {{topSeller.sold}} sold</p>
+        </div>
     </div>
 
     <section class="charts">
@@ -21,10 +29,16 @@
             data-values='{{{json stockChart.values}}}'>
         </canvas>
 
-        <h3>Low Stock Distribution</h3>
+        <h3>Stock Distribution</h3>
         <canvas id="lowStockChart"
             data-labels='{{{json lowStockChart.labels}}}'
             data-values='{{{json lowStockChart.values}}}'>
+        </canvas>
+
+        <h3>Top Selling</h3>
+        <canvas id="topSellingChart"
+            data-labels='{{{json topSellingChart.labels}}}'
+            data-values='{{{json topSellingChart.values}}}'>
         </canvas>
     </section>
 
@@ -32,37 +46,38 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    function renderChart(canvasId, type, label, backgroundColor) {
-      const canvas = document.getElementById(canvasId)
-      if(!canvas){
-          return
-      }
+    document.addEventListener('DOMContentLoaded', () => {
+        function renderChart(canvasId, type, label, backgroundColor) {
+            const canvas = document.getElementById(canvasId)
+            if(!canvas){
+                return
+            }
 
-      const ctx = canvas.getContext('2d')
-      const labels = JSON.parse(canvas.dataset.labels || '[]')
-      const values = JSON.parse(canvas.dataset.values || '[]')
+            const ctx = canvas.getContext('2d')
+            const labels = JSON.parse(canvas.dataset.labels || '[]')
+            const values = JSON.parse(canvas.dataset.values || '[]')
 
-      new Chart(ctx, {
-        type: type,
-        data: {
-          labels: labels,
-          datasets: [{
-            label: label,
-            data: values,
-            backgroundColor: backgroundColor
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true }
-          }
+            new Chart(ctx, {
+                type: type,
+                data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: values,
+                    backgroundColor: backgroundColor
+                }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            })
         }
-      })
-    }
 
-    renderChart('stockChart', 'bar', 'Stock Levels', '#60a5fa')
-    renderChart('lowStockChart', 'bar', 'Stock Distribution', ['#10b981', '#fbbf24', '#ef4444'])
-  })
+        renderChart('stockChart', 'bar', 'Stock Levels', '#60a5fa')
+        renderChart('lowStockChart', 'bar', 'Stock Distribution', ['#22c55e', '#f59e42', '#ef4444'])
+        renderChart('topSellingChart', 'bar', 'Top Selling', '#facc15')
+    })
 </script>

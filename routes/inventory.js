@@ -311,7 +311,7 @@ router.put("/inventory/:id", authMiddleware, adminOnly, async (req, res) => {
   }
 })
 
-router.post('/buy/:id', async (req, res) => {
+router.post('/buy/:id', authMiddleware, async (req, res) => {
     try{
         const productId = req.params.id
         const { quantity } = req.body
@@ -338,7 +338,26 @@ router.post('/buy/:id', async (req, res) => {
             minThreshold: product.minThreshold
         })
     }catch(err){
-        res.status(err.status || 500).json({ message: err.message || "Server error" })
+        res.status(err.status || 400).json({ message: err.message || "Server error" })
+    }
+})
+
+router.get('/stats', authMiddleware, async (req, res) => {
+    try{
+        const allProducts = await getAllProducts()
+
+        const categoryCount = new Set(allProducts.map(p => p.categoryName?.toLowerCase())).size
+        const totalProducts = allProducts.length
+        const lowStockCount = allProducts.filter(p => p.quantity > 0 && p.quantity <= p.minThreshold).length
+        const noStockCount = allProducts.filter(p => p.quantity === 0).length
+
+        const totalInventoryValue = allProducts.reduce((acc, p) => {
+            return acc + (p.quantity * p.unitPrice)
+        }, 0)
+
+        res.status(200).json({ categoryCount, totalProducts, lowStockCount, noStockCount, totalInventoryValue: totalInventoryValue.toFixed(2) })
+    }catch(err){
+        res.status(400).json({ message: 'Failed to load stats.' })
     }
 })
 
