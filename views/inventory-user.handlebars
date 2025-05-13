@@ -62,8 +62,8 @@
                 <tbody>
                     {{#each products}}
                     <tr>
-                        <td>{{productName}}</td>
-                        <td>{{categoryName}}</td>
+                        <td>{{capitalizeFirst productName}}</td>
+                        <td>{{capitalizeFirst categoryName}}</td>
                         <td>${{unitPrice}}</td>
                         <td>{{quantity}} units</td>
                         <td>{{restockSuggestion.nextRestockDate}}</td>

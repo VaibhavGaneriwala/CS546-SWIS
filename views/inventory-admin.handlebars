@@ -322,11 +322,7 @@
             });
 
             if (response.ok) {
-                // Close modal and refresh page
-                const newProduct = await response.json()
-                closeAddProductModal();
-                appendNewProductRow(newProduct);
-                showToast('Product added successfully!');
+                window.location.reload();
             } else {
                 const error = await response.json();
                 // Display error message
