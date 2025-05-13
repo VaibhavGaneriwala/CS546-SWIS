@@ -23,13 +23,7 @@
                 <h3>{{totalProducts}}</h3>
                 <small>Total Value: ${{totalInventoryValue}}</small>
             </div>
-            <!--
-                <div class="card">
-                    <p>Price Overview</p>
-                    <h3>${{totalInventoryValue}}</h3>
-                    <small>Total Price</small>
-                </div>
-                !-->
+
             <div class="card">
                 <p>Low Stocks</p>
                 <h3>{{lowStockCount}}</h3>
@@ -39,7 +33,7 @@
 
         <section class="products">
             <div class="product-header">
-                <h2>Products</h2>
+                <h2>Inventory</h2>
 
                 <div id="error" class="error-message" hidden></div>
 
@@ -65,8 +59,8 @@
                 <tbody>
                     {{#each products}}
                     <tr>
-                        <td>{{productName}}</td>
-                        <td>{{categoryName}}</td>
+                        <td>{{capitalizeFirst productName}}</td>
+                        <td>{{capitalizeFirst categoryName}}</td>
                         <td>${{unitPrice}}</td>
                         <td>{{quantity}} units</td>
                         <td>{{minThreshold}} units</td>
