@@ -1,0 +1,210 @@
+<div class="container">
+    <main class="main-content">
+        <header class="top-bar">
+            <form method="GET" action="/inventory/user"
+                style="width: 60%; display: flex; gap: 8px; align-items: center;">
+                <input type="text" name="search" placeholder="Search product" value="{{search}}" style="width: 100%;" />
+                {{#if search}}
+                <a href="/inventory/user"
+                    style="padding: 8px 14px; background: #eee; border-radius: 6px; color: #333; text-decoration: none; font-size: 15px; border: 1px solid #ddd;">Clear</a>
+                {{/if}}
+            </form>
+            <div class="profile"></div>
+        </header>
+
+        <section class="overview">
+            <div class="card">
+                <p>Categories</p>
+                <h3>{{categoryCount}}</h3>
+                <small>Last 7 days</small>
+            </div>
+            <div class="card">
+                <p>Total Products</p>
+                <h3>{{totalProducts}}</h3>
+                <small>Total Value: ${{totalInventoryValue}}</small>
+            </div>
+            <!--
+            <div class="card">
+                <p>Price Overview</p>
+                <h3>${{totalInventoryValue}}</h3>
+                <small>Total Price</small>
+            </div>
+            !-->
+            <div class="card">
+                <p>Low Stocks</p>
+                <h3>{{lowStockCount}}</h3>
+                <small>{{noStockCount}} Out of stock</small>
+            </div>
+        </section>
+
+        <section class="products">
+            <div class="product-header">
+                <h2>Products</h2>
+
+                <div id="error" class="error-message" hidden></div>
+
+                <div class="buttons">
+                    <button class="download" onclick="downloadCSV()">Download all</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Products</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Next Restock Date</th>
+                        <th>Availability</th>
+                        <th>Buy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                        <td>{{productName}}</td>
+                        <td>{{categoryName}}</td>
+                        <td>${{unitPrice}}</td>
+                        <td>{{quantity}} units</td>
+                        <td>{{restockSuggestion.nextRestockDate}}</td>
+                        <td class="{{stockStatus}}">
+                            {{#if (eq stockStatus 'out-stock')}}
+                            Out of stock
+                            {{else if (eq stockStatus 'low-stock')}}
+                            Low stock
+                            {{else}}
+                            In stock
+                            {{/if}}
+                        </td>
+                        <td>
+                            {{#if (eq stockStatus 'out-stock')}}
+                            Out of stock
+                            {{else}}
+                            <form class="buy-form" data-id="{{_id}}">
+                                <input type="number" name="buy-quantity" placeholder="Quantity" min="1" required />
+                                <button type="submit" class="buy-btn">Buy</button>
+                            </form>
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <div class="pagination">
+                <button {{#if (eq currentPage 1)}}disabled{{/if}}
+                    onclick="window.location.href='/inventory/user?page={{subtract currentPage 1}}'">Previous</button>
+                <span>Page {{currentPage}} of {{totalPages}}</span>
+                <button {{#if (eq currentPage totalPages)}}disabled{{/if}}
+                    onclick="window.location.href='/inventory/user?page={{add currentPage 1}}'">Next</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    function downloadCSV() {
+        window.location.href = '/inventory/export';
+    }
+
+    function showMessage(message, isError = false) {
+        const errorDiv = document.getElementById('error')
+
+        if (!errorDiv) {
+            return
+        }
+
+        errorDiv.textContent = message
+        errorDiv.style.display = 'block'
+
+        if (isError) {
+            errorDiv.style.color = 'red'
+        } else {
+            errorDiv.style.color = 'green'
+        }
+
+        setTimeout(() => {
+            errorDiv.style.display = 'none'
+            errorDiv.textContent = ''
+        }, 5000)
+    }
+
+    function formatStockStatus(status) {
+        if (status === "out-stock") {
+            return "Out of stock"
+        } else if (status === "low-stock") {
+            return "Low stock"
+        } else {
+            return "In stock"
+        }
+    }
+
+    function updateProductRow(row, newQuantity, minThreshold) {
+        const quantityCell = row.querySelector('td:nth-child(4)')
+        const stockCell = row.querySelector('td:nth-child(6)')
+
+        quantityCell.textContent = `${newQuantity} units`
+
+        let stockStatus = 'in-stock'
+
+        if (newQuantity === 0) {
+            stockStatus = 'out-stock'
+        } else if (newQuantity < minThreshold) {
+            stockStatus = 'low-stock'
+        }
+
+        let stockText = formatStockStatus(stockStatus)
+
+        stockCell.className = stockStatus
+        stockCell.textContent = stockText
+
+        //replace form with "Out of stock" if quantity is 0
+        const buyCell = row.querySelector('td:last-child')
+        if (newQuantity === 0) {
+            buyCell.innerHTML = 'Out of stock'
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.buy-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault()
+
+                const productId = form.dataset.id
+                const quantityInput = form.querySelector('input[name="buy-quantity"]')
+                const quantity = parseInt(quantityInput.value)
+                const row = form.closest('tr')
+
+                if (!quantity || quantity <= 0) {
+                    showMessage("Please enter a valid quantity.", true)
+                    return
+                }
+
+                try {
+                    const response = await fetch(`/buy/${productId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ quantity })
+                    })
+
+                    const result = await response.json()
+
+                    if (response.ok) {
+                        showMessage("Purchase successful!")
+                        quantityInput.value = ''
+
+                        const newQty = result.updatedQuantity
+                        const minThreshold = result.minThreshold
+
+                        updateProductRow(row, newQty, minThreshold)
+                    } else {
+                        showMessage(result.message || "Error processing purchase.", true)
+                    }
+                } catch (err) {
+                    showMessage("Server error.", true)
+                }
+            })
+        })
+    })
+
+
+</script>

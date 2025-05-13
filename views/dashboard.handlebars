@@ -13,7 +13,7 @@
                 <h3>Inventory Summary</h3>
                 <div class="stats-row">
                     <div>Number of Products<br><strong>{{productCount}}</strong></div>
-                    <div><strong>{{totalQuantity}}</strong><br>Quantity in Hand</div>
+                    <div>Quantity in Hand<br><strong>{{totalQuantity}}</strong></div>
                 </div>
             </div>
 
@@ -26,3 +26,34 @@
         </section>
     </main>
 </div>
+
+{{#if hasDiscrepancies}}
+<div class="discrepancies-section">
+    <h2>Inventory Discrepancies</h2>
+    <div class="discrepancies-container">
+        <table class="discrepancies-table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Actual Quantity</th>
+                    <th>Expected Quantity</th>
+                    <th>Discrepancy</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each discrepancies}}
+                {{#if (notEq quantity expectedQuantity)}}
+                <tr
+                    class="discrepancy-row {{#if (gt expectedQuantity quantity)}}positive-discrepancy{{else}}negative-discrepancy{{/if}}">
+                    <td>{{productName}}</td>
+                    <td>{{quantity}}</td>
+                    <td>{{expectedQuantity}}</td>
+                    <td>{{subtract expectedQuantity quantity}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{/if}}

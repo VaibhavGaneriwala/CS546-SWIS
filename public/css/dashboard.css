@@ -7,13 +7,24 @@ body {
 
 .dashboard {
     display: flex;
-    height: 100vh;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    width: 100%;
+    background: none;
 }
 
 .main {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+    padding: 32px 24px 48px 24px;
 }
 
 .profile {
@@ -29,35 +40,46 @@ body {
 }
 
 .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
 }
 
 .card {
-    background-color: #fff;
-    padding: 20px;
+    background: #f6f8fb;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+    padding: 24px 32px;
+    min-width: 180px;
+    text-align: left;
 }
 
 .card h3 {
-    font-size: 16px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
+    color: #2563eb;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.card div,
+.card strong {
+    font-size: 1.2rem;
+    color: #222;
 }
 
 .stats-row {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    gap: 16px;
 }
 
 .stats-row div {
-    width: 45%;
+    width: 48%;
     margin-bottom: 10px;
+    font-size: 1rem;
+    color: #444;
 }
 
 .card.wide {
@@ -102,4 +124,84 @@ table td {
     font-size: 12px;
     padding: 2px 6px;
     border-radius: 4px;
+}
+
+.discrepancies-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.discrepancies-section h2 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.discrepancies-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.discrepancies-table th,
+.discrepancies-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.discrepancies-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+}
+
+.discrepancy-row.positive-discrepancy {
+    background-color: #fff3cd;
+}
+
+.discrepancy-row.negative-discrepancy {
+    background-color: #f8d7da;
+}
+
+.discrepancy-row td:last-child {
+    font-weight: bold;
+}
+
+.discrepancy-row.positive-discrepancy td:last-child {
+    color: #856404;
+}
+
+.discrepancy-row.negative-discrepancy td:last-child {
+    color: #721c24;
+}
+
+@media (max-width: 900px) {
+    .main {
+        padding: 18px 4px 32px 4px;
+    }
+
+    .grid-container {
+        gap: 16px;
+    }
+
+    .card {
+        padding: 16px 8px;
+    }
+
+    .stats-row div {
+        width: 100%;
+    }
+
+    .discrepancies-section {
+        margin: 1rem 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .discrepancies-table th,
+    .discrepancies-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
 }

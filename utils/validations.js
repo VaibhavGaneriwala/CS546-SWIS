@@ -4,7 +4,7 @@ export { validFirstName, validLastName, validEmail, validUsername, validPassword
 function validFirstName(firstName) {
 
     if (!firstName === 'string' || firstName.trim() === '') throw new Error("First name must be a non-empty string");
-    firstName = firstName.trim().toLowerCase();
+    firstName = firstName.trim()
     const regex = /^[A-Za-z]{2,50}$/
     if (!regex.test(firstName)) throw new Error("First name must be 2-50 characters long, containing only letters");
     return firstName;
@@ -12,7 +12,7 @@ function validFirstName(firstName) {
 
 function validLastName(lastName) {
     if (!lastName === 'string' || lastName.trim() === '') throw new Error("Last name must be a non-empty string");
-    lastName = lastName.trim().toLowerCase();
+    lastName = lastName.trim()
     const regex = /^[A-Za-z]{2,50}$/
     if (!regex.test(lastName)) throw new Error("Last name must be 2-50 characters long, containing only letters");
     return lastName;
@@ -54,7 +54,7 @@ function createCurrentDateandTime() {
 
 function validProductName(name) {
     if (typeof name !== "string" || !name.trim()) throw new Error("Product Name must be a non-empty string");
-    return name.trim().toLowerCase();
+    return name.trim()
 }
 
 function validCategoryName(name) {
@@ -63,7 +63,7 @@ function validCategoryName(name) {
 }
 
 function validQuantity(quantity) {
-    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 1) throw new Error("Quantity must be an integer greater than or equal to 1");
+    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 0) throw new Error("Quantity must be an integer greater than or equal to 1");
     return quantity;
 }
 
@@ -83,6 +83,19 @@ function validRestockSuggestion(restockSuggestion) {
 
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(restockSuggestion.nextRestockDate)) throw new Error("Invalid restockSuggestion.nextRestockDate");
+
+    const today = new Date()
+    const selectedDate = new Date(restockSuggestion.nextRestockDate)
+
+    //timezone adjustment
+    selectedDate.setMinutes(selectedDate.getMinutes() + selectedDate.getTimezoneOffset())
+
+    today.setHours(0, 0, 0, 0)
+    selectedDate.setHours(0, 0, 0, 0)
+
+    if (selectedDate < today) {
+        throw new Error("Restock date cant be in the past")
+    }
     
     return restockSuggestion;
 }

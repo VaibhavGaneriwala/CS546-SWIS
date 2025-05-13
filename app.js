@@ -33,6 +33,12 @@ const hbs = exphbs.create({
         },
         json: function (context) {
             return JSON.stringify(context);
+        },
+        gt: function (a, b) {
+            return a > b;
+        },
+        notEq: function (a, b) {
+            return a !== b;
         }
     }
 });

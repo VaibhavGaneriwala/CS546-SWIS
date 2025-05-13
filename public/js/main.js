@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
+
+            const username = document.getElementById('username').value.trim().toLowerCase();
             const password = document.getElementById('password').value.trim();
-            
+
             if (!username || !password) {
                 showError('Please fill in all fields');
                 return;
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 const data = await response.text();
-                
+
                 if (response.redirected) {
                     window.location.href = response.url;
                 } else if (response.ok) {
@@ -57,16 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
-            const username = document.getElementById('username').value.trim();
+            const username = document.getElementById('username').value.trim().toLowerCase();
             const password = document.getElementById('password').value.trim();
             const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            const role = document.getElementById('role').value;
 
             // Validation
-            if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
+            if (!firstName || !lastName || !email || !username || !password || !confirmPassword || !role) {
                 showError('Please fill in all fields');
                 return;
             }
@@ -93,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        firstName, lastName, email, username, password
+                        firstName, lastName, email, username, password, role
                     })
                 });
 
@@ -125,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (errorDiv) {
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
-            
+
             // Hide error after 5 seconds
             setTimeout(() => {
                 errorDiv.style.display = 'none';
