@@ -40,7 +40,6 @@ const productNames = [
     'Calculator', 'Projector', 'Extension Cord', 'Power Strip', 'Surge Protector', 'Toolbox', 'Hammer', 'Screwdriver Set', 'Wrench Set', 'Drill',
     'Measuring Tape', 'Flashlight', 'Batteries', 'First Aid Kit', 'Fire Extinguisher', 'Safety Glasses', 'Ear Protection', 'Work Boots', 'Hi-Vis Vest', 'Software License'
 ].map(name => name.toLowerCase());
-].map(name => name.toLowerCase())
 
 const items = []
 for (let i = 0; i < 50; i++) {
