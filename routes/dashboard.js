@@ -1,7 +1,7 @@
 import express from 'express'
 import { getDashboardData } from '../data/dashboardController.js'
 import { checkInventoryDiscrepancies } from '../data/inventoryController.js'
-import { authMiddleware } from '../middlewares/auth.js'
+import { authMiddleware, adminOnly } from '../middlewares/auth.js'
 
 const router = express.Router()
 
@@ -23,7 +23,7 @@ router.get('/', authMiddleware, async (req, res) => {
 })
 
 // API endpoint to check discrepancies
-router.get('/discrepancies', authMiddleware, async (req, res) => {
+router.get('/discrepancies', authMiddleware, adminOnly, async (req, res) => {
   try {
     const discrepancies = await checkInventoryDiscrepancies()
     res.json({ discrepancies })

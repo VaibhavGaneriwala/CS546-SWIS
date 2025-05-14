@@ -39,6 +39,10 @@ const hbs = exphbs.create({
         },
         notEq: function (a, b) {
             return a !== b;
+        },
+        capitalizeFirst: function(str) {
+            if (!str) return '';
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
     }
 });

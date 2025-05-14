@@ -15,25 +15,18 @@
         <section class="overview">
             <div class="card">
                 <p>Categories</p>
-                <h3>{{categoryCount}}</h3>
+                <h3 id="categoryCount">Loading...</h3>
                 <small>Last 7 days</small>
             </div>
             <div class="card">
                 <p>Total Products</p>
-                <h3>{{totalProducts}}</h3>
-                <small>Total Value: ${{totalInventoryValue}}</small>
+                <h3 id="totalProducts">Loading...</h3>
+                <small>Total Value: <span id="totalInventoryValue">Loading...</span></small>
             </div>
-            <!--
-            <div class="card">
-                <p>Price Overview</p>
-                <h3>${{totalInventoryValue}}</h3>
-                <small>Total Price</small>
-            </div>
-            !-->
             <div class="card">
                 <p>Low Stocks</p>
-                <h3>{{lowStockCount}}</h3>
-                <small>{{noStockCount}} Out of stock</small>
+                <h3 id="lowStockCount">Loading...</h3>
+                <small><span id="noStockCount">0</span> Out of stock</small>
             </div>
         </section>
 
@@ -62,8 +55,8 @@
                 <tbody>
                     {{#each products}}
                     <tr>
-                        <td>{{productName}}</td>
-                        <td>{{categoryName}}</td>
+                        <td>{{capitalizeFirst productName}}</td>
+                        <td>{{capitalizeFirst categoryName}}</td>
                         <td>${{unitPrice}}</td>
                         <td>{{quantity}} units</td>
                         <td>{{restockSuggestion.nextRestockDate}}</td>
@@ -102,6 +95,28 @@
 </div>
 
 <script>
+    async function updateInventoryStats() {
+        try{
+            const response = await fetch('/stats', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            if(response.ok){
+                const data = await response.json()
+                document.getElementById('categoryCount').textContent = data.categoryCount
+                document.getElementById('totalProducts').textContent = data.totalProducts
+                document.getElementById('lowStockCount').textContent = data.lowStockCount
+                document.getElementById('noStockCount').textContent = data.noStockCount
+                document.getElementById('totalInventoryValue').textContent = `$${data.totalInventoryValue}`
+            }else{
+                const error = await response.json()
+                showMessage(error.message || "Failed to get stats", true)
+            }
+        }catch(err){
+            showMessage("error getting stats", true)
+        }
+    }
+
     function downloadCSV() {
         window.location.href = '/inventory/export';
     }
@@ -164,7 +179,9 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+        updateInventoryStats()
+
         document.querySelectorAll('.buy-form').forEach(form => {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault()
@@ -196,6 +213,7 @@
                         const minThreshold = result.minThreshold
 
                         updateProductRow(row, newQty, minThreshold)
+                        updateInventoryStats()
                     } else {
                         showMessage(result.message || "Error processing purchase.", true)
                     }

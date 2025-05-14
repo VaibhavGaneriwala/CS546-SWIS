@@ -54,7 +54,7 @@ function createCurrentDateandTime() {
 
 function validProductName(name) {
     if (typeof name !== "string" || !name.trim()) throw new Error("Product Name must be a non-empty string");
-    return name.trim()
+    return name.trim().toLowerCase();
 }
 
 function validCategoryName(name) {

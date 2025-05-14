@@ -36,7 +36,7 @@ async function addProduct(productName, categoryName, quantity, minThreshold, uni
     const insertInfo = await inventoryCollection.insertOne(newProduct);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error("Could not add product");
 
-    await addAuditLog(userId, name, 'addProduct', {
+    await addAuditLog(insertInfo.insertedId, userId, name, 'addProduct', {
         productName,
         categoryName,
         quantity,
@@ -69,7 +69,18 @@ async function updateProduct(productId, productName, categoryName, quantity, min
 
     const existingProduct = await inventoryCollection.findOne({ _id: id })
     if (!existingProduct) {
-        throw new Error("Product not found")
+        throw new Error("A product with this id already exists")
+    }
+
+    productId = new ObjectId(productId)
+
+    const sameNameProduct = await inventoryCollection.findOne({ 
+        _id: { $ne: productId },
+        productName: productName, 
+    })
+
+    if(sameNameProduct){
+        throw new Error("A product with this name already exists")
     }
 
     const updateData = {
@@ -91,8 +102,7 @@ async function updateProduct(productId, productName, categoryName, quantity, min
         throw new Error("Could not update product")
     }
 
-    // Log the update action
-    await addAuditLog(userId, name, 'updateProduct', {
+    await addAuditLog(productId, userId, name, 'updateProduct', {
         before: existingProduct,
         after: updateData
     })
@@ -118,7 +128,9 @@ async function removeProduct(productId, userId, name) {
         throw ("Could not remove product")
     }
 
-    await addAuditLog(userId, name, 'deleteProduct', {
+    productId = new ObjectId(productId)
+
+    await addAuditLog(productId, userId, name, 'deleteProduct', {
         productName: existingProduct.productName,
         categoryName: existingProduct.categoryName,
         quantity: existingProduct.quantity
@@ -188,7 +200,9 @@ async function updateProductQuantity(productId, newQuantity, userId, name) {
         throw ("Failed to update quantity")
     }
 
-    await addAuditLog(userId, name, 'buyProduct', {
+    productId = new ObjectId(productId)
+
+    await addAuditLog(productId, userId, name, 'buyProduct', {
         productName: existingProduct.productName,
         quantityBefore: existingProduct.quantity,
         quantityAfter: newQuantity

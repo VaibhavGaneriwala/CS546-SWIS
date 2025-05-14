@@ -12,9 +12,13 @@ export const getAuditLogsByUser = async (userId) => {
 }
 
 
-export const addAuditLog = async (userId, name, action, details) => {
+export const addAuditLog = async (productId, userId, name, action, details) => {
     const auditLogsCol = await auditLogs()
+
+    userId = new ObjectId(userId)
+    
     const auditLog = {
+        productId,
         userId,
         userName: name,
         action,
