@@ -125,6 +125,16 @@ npm start
 
 Visit `http://localhost:3000` in your browser.
 
+### 5. Username and Password to test the program.
+```
+Admin:
+Username: lego
+Password: Password@1
+
+User:
+Username: superman
+Password: Superman@1
+```
 
 ## 📈 Future Improvements
 
