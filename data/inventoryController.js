@@ -19,8 +19,8 @@ async function addProduct(productName, categoryName, quantity, minThreshold, uni
 
     const inventoryCollection = await inventory();
 
-    const existingProduct = await inventoryCollection.findOne({ productName: productName });
-    if (existingProduct) throw new Error("A product with this name already exists");
+    const existingProduct = await inventoryCollection.findOne({ productName: productName, categoryName: categoryName });
+    if (existingProduct) throw new Error("A product with this name and category already exists");
 
     const newProduct = {
         productName,
@@ -69,7 +69,12 @@ async function updateProduct(productId, productName, categoryName, quantity, min
 
     const existingProduct = await inventoryCollection.findOne({ _id: id })
     if (!existingProduct) {
-        throw new Error("Product not found")
+        throw new Error("A product with this id already exists")
+    }
+
+    const sameNameProduct = await inventoryCollection.findOne({ productName: productName, categoryName: categoryName })
+    if(sameNameProduct){
+        throw new Error("A product with this name and category already exists")
     }
 
     const updateData = {
