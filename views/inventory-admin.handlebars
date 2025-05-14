@@ -482,7 +482,7 @@
                 updateInventoryStats()
             } else {
                 const error = await response.json()
-                const errorElement = document.getElementById('error')
+                const errorElement = document.getElementById('editProductNameError')
                 errorElement.textContent = error.message || "Failed to get inventory stats"
                 errorElement.style.display = 'block'
             }
