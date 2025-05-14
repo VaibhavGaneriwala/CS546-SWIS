@@ -19,8 +19,8 @@ async function addProduct(productName, categoryName, quantity, minThreshold, uni
 
     const inventoryCollection = await inventory();
 
-    const existingProduct = await inventoryCollection.findOne({ productName: productName, categoryName: categoryName });
-    if (existingProduct) throw new Error("A product with this name and category already exists");
+    const existingProduct = await inventoryCollection.findOne({ productName: productName });
+    if (existingProduct) throw new Error("A product with this name already exists");
 
     const newProduct = {
         productName,
@@ -72,9 +72,15 @@ async function updateProduct(productId, productName, categoryName, quantity, min
         throw new Error("A product with this id already exists")
     }
 
-    const sameNameProduct = await inventoryCollection.findOne({ productName: productName, categoryName: categoryName })
+    productId = new ObjectId(productId)
+
+    const sameNameProduct = await inventoryCollection.findOne({ 
+        _id: { $ne: productId },
+        productName: productName, 
+    })
+
     if(sameNameProduct){
-        throw new Error("A product with this name and category already exists")
+        throw new Error("A product with this name already exists")
     }
 
     const updateData = {
@@ -95,9 +101,6 @@ async function updateProduct(productId, productName, categoryName, quantity, min
     if (!updateInfo.acknowledged || updateInfo.modifiedCount === 0) {
         throw new Error("Could not update product")
     }
-
-    // Log the update action
-    productId = new ObjectId(productId)
 
     await addAuditLog(productId, userId, name, 'updateProduct', {
         before: existingProduct,

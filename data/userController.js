@@ -33,7 +33,6 @@ const registerUser = async (firstName, lastName, email, username, password, role
             username: validatedUsername,
             password: hashedPassword,
             roleName: role,
-            profilePicture: null,
             createdAt: helpers.createCurrentDateandTime(),
             lastLogin: null
         };
@@ -48,8 +47,7 @@ const registerUser = async (firstName, lastName, email, username, password, role
                 username: validatedUsername,
                 roleName: role,
                 firstName: validatedFirstName,
-                lastName: validatedLastName,
-                profilePicture: null
+                lastName: validatedLastName
             }
         };
     } catch (e) {
@@ -92,16 +90,4 @@ const updateUser = async (userId, updates) => {
     }
 };
 
-const updateProfilePicture = async (userId, profilePicturePath) => {
-    try {
-        const usersCol = await users();
-        const updateResult = await usersCol.updateOne({ _id: userId },{ $set: { profilePicture: profilePicturePath}});
-        if (!updateResult.acknowledged || updateResult.modifiedCount === 0) throw { status: 500, message: "Could not update profile picture" };
-
-        return { status: 200, message: "Profile picture updated successfully" };
-    } catch (e) {
-        throw { status: 500, message: e.message };
-    }
-};
-
-export { registerUser, loginUser, updateUser, updateProfilePicture };
+export { registerUser, loginUser, updateUser };

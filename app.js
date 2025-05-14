@@ -32,7 +32,7 @@ const hbs = exphbs.create({
             return a - b;
         },
         json: function (context) {
-            return JSON.stringify(context, null, 2);
+            return JSON.stringify(context);
         },
         gt: function (a, b) {
             return a > b;
@@ -43,10 +43,6 @@ const hbs = exphbs.create({
         capitalizeFirst: function(str) {
             if (!str) return '';
             return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        },
-        firstLetter: function(str) {
-            if (!str) return '';
-            return str.charAt(0).toUpperCase();
         }
     }
 });
