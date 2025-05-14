@@ -32,14 +32,14 @@ const userInsertResult = await users.insertMany(userDocs)
 const userIds = Object.values(userInsertResult.insertedIds)
 
 // Generate 50+ inventory items
-const categories = ['electronics', 'supplies', 'hardware', 'office', 'furniture', 'tools', 'software']
+const categories = ['electronics', 'supplies', 'hardware', 'office', 'furniture', 'tools', 'software'].map(name => name.toLowerCase());
 const productNames = [
     'Bluetooth Scanner', 'Thermal Printer', 'Barcode Labels', 'Thermal Ribbon', 'Laptop', 'Desktop PC', 'Monitor', 'Keyboard', 'Mouse', 'USB Drive',
     'External HDD', 'Router', 'Switch', 'Ethernet Cable', 'Label Maker', 'Packing Tape', 'Box Cutter', 'Safety Gloves', 'Pallet Jack', 'Hand Truck',
     'Clipboard', 'Whiteboard', 'Desk Chair', 'Filing Cabinet', 'Printer Paper', 'Ink Cartridge', 'Stapler', 'Paper Clips', 'Rubber Bands', 'Notepad',
     'Calculator', 'Projector', 'Extension Cord', 'Power Strip', 'Surge Protector', 'Toolbox', 'Hammer', 'Screwdriver Set', 'Wrench Set', 'Drill',
     'Measuring Tape', 'Flashlight', 'Batteries', 'First Aid Kit', 'Fire Extinguisher', 'Safety Glasses', 'Ear Protection', 'Work Boots', 'Hi-Vis Vest', 'Software License'
-]
+].map(name => name.toLowerCase());
 
 const items = []
 for (let i = 0; i < 50; i++) {
