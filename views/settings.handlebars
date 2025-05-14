@@ -1,6 +1,27 @@
 <div class="settings-container">
     <h1>Settings</h1>
     <div class="error-message" style="display: {{#if error}}block{{else}}none{{/if}}">{{error}}</div>
+    
+    <!-- Profile Picture Section -->
+    <div class="profile-picture-section">
+        <div class="current-profile-picture">
+            {{#if user.profilePicture}}
+                <img src="{{user.profilePicture}}" alt="Profile Picture" class="profile-picture">
+            {{else}}
+                <div class="default-profile-picture">
+                    <span>{{firstLetter user.firstName}}{{firstLetter user.lastName}}</span>
+                </div>
+            {{/if}}
+        </div>
+        <form action="/settings/profile-picture" method="POST" enctype="multipart/form-data" class="profile-picture-form">
+            <div class="form-group">
+                <label for="profilePicture">Update Profile Picture</label>
+                <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required>
+            </div>
+            <button class="btn" type="submit">Upload Picture</button>
+        </form>
+    </div>
+
     <div class="settings-form">
         <form action="/settings" method="POST">
             <div class="form-group">
@@ -46,6 +67,28 @@
             errorMessage.style.display = 'none'
         }
 
+        // Profile picture preview
+        const profilePictureInput = document.getElementById('profilePicture')
+        if(profilePictureInput) {
+            profilePictureInput.addEventListener('change', function(e) {
+                const file = e.target.files[0]
+                if(file) {
+                    if(file.size > 5 * 1024 * 1024) { // 5MB
+                        showError('File size must be less than 5MB')
+                        this.value = ''
+                        return
+                    }
+                    
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+                    if(!allowedTypes.includes(file.type)) {
+                        showError('Only JPG, PNG and GIF files are allowed')
+                        this.value = ''
+                        return
+                    }
+                }
+            })
+        }
+
         const settingsForm = document.querySelector('form[action="/settings"]')
         if(settingsForm){
             settingsForm.addEventListener('submit', async (e) => {
@@ -66,38 +109,8 @@
                     return
                 }
 
-                try{
-                    const response = await fetch('/settings', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            firstName, lastName, email, username
-                        })
-                    })
-
-                    const data = await response.text()
-
-                    if(response.redirected){
-                        window.location.href = response.url
-                    }else if(response.ok){
-                        window.location.href = '/dashboard'
-                    }else{
-                        const parser = new DOMParser()
-                        const doc = parser.parseFromString(data, 'text/html')
-                        const errorDiv = doc.querySelector('.error-message')
-                        if(errorDiv){
-                            showError(errorDiv.textContent)
-                        }else{
-                            showError('Registration failed. Please try again.')
-                        }
-                    }
-                }catch(error){
-                    showError('An error occurred. Please try again.')
-                }
+                settingsForm.submit()
             })
         }
     })
-
 </script>
